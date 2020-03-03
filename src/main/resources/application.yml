@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: estacionamento
+  datasource:
+    url: ${DATABASE_URL:jdbc:mariadb://localhost:3306/estacionamento}
+    username: ${DATABASE_USERNAME:root}
+    password: ${DATABASE_PASSWORD:root}
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        order_updates: true
+        batch_versioned_data: true
+        jdbc:
+          batch_size: 5
+        enable_lazy_load_no_trans: true
+        event:
+          merge:
+            entity_copy_observer: allow
+    hibernate.naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  liquibase:
+    change-log: classpath:db/changelog.xml

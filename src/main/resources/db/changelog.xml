@@ -1,0 +1,24 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet id="1583293834" author="bs"> <!-- Pegar o id em https://www.epochconverter.com/ -->
+        <comment>Criacao inicial das tabela</comment>
+        <createTable tableName="VEICULO">
+            <column name="ID" type="CHAR(36)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="TIPO" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MARCA" type="VARCHAR(80)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="VEICULO" indexName="VEICULO_TIPO_IDX">
+            <column name="TIPO"></column>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

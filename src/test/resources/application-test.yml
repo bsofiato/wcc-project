@@ -1,0 +1,4 @@
+spring:
+  datasource:
+    url: jdbc:tc:mariadb://localhost:3306/estacionamento
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
