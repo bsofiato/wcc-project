@@ -1,9 +1,6 @@
 package com.matera.wcc.projeto.repository;
 
-import com.matera.wcc.projeto.domain.Caminhao;
-import com.matera.wcc.projeto.domain.Carro;
-import com.matera.wcc.projeto.domain.Moto;
-import com.matera.wcc.projeto.domain.Veiculo;
+import com.matera.wcc.projeto.domain.*;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +18,6 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @todo Colocar os atributos novos em testes de escrita
- * @todo Colocar os atributos novos em testes de leitura
- * @todo Colocar os atributos novos em testes de alteração
  * @todo <i>extra</i> Colocar testes de paginacao
  */
 @DataJpaTest(showSql = true)
@@ -44,11 +38,17 @@ public class VeiculoRepositoryTest {
         Moto moto = new Moto();
         moto.setMarca("HONDA");
         moto.setModelo("CC225");
+        moto.setAnoFabricacao(2015L);
+        moto.setAnoModelo(2016L);
+        moto.setCombustivel(Combustivel.GASOLINA);
 
         Moto motoCarregada = saveAndLoad(moto);
         assertThat(motoCarregada.getId()).isNotNull();
         assertThat(motoCarregada.getMarca()).isEqualTo("HONDA");
         assertThat(motoCarregada.getModelo()).isEqualTo("CC225");
+        assertThat(motoCarregada.getAnoFabricacao()).isEqualTo(2015L);
+        assertThat(motoCarregada.getAnoModelo()).isEqualTo(2016L);
+        assertThat(motoCarregada.getCombustivel()).isSameAs(Combustivel.GASOLINA);
     }
 
     @Test
@@ -56,11 +56,19 @@ public class VeiculoRepositoryTest {
         Carro carro = new Carro();
         carro.setMarca("VOLKSWAGEN");
         carro.setModelo("GOL");
+        carro.setAnoFabricacao(2018L);
+        carro.setAnoModelo(2019L);
+        carro.setCombustivel(Combustivel.ALCOOL);
+        carro.setNumeroPortas(5L);
 
         Carro carroCarregado = saveAndLoad(carro);
         assertThat(carroCarregado.getId()).isNotNull();
         assertThat(carroCarregado.getMarca()).isEqualTo("VOLKSWAGEN");
         assertThat(carroCarregado.getModelo()).isEqualTo("GOL");
+        assertThat(carroCarregado.getAnoFabricacao()).isEqualTo(2018L);
+        assertThat(carroCarregado.getAnoModelo()).isEqualTo(2019L);
+        assertThat(carroCarregado.getCombustivel()).isSameAs(Combustivel.ALCOOL);
+        assertThat(carroCarregado.getNumeroPortas()).isEqualTo(5L);
     }
 
     @Test
@@ -68,11 +76,17 @@ public class VeiculoRepositoryTest {
         Caminhao caminhao = new Caminhao();
         caminhao.setMarca("MERCEDEZ-BENZ");
         caminhao.setModelo("AXOR");
+        caminhao.setAnoFabricacao(2010L);
+        caminhao.setAnoModelo(2011L);
+        caminhao.setCombustivel(Combustivel.DIESEL);
 
         Caminhao carroCarregado = saveAndLoad(caminhao);
         assertThat(carroCarregado.getId()).isNotNull();
         assertThat(carroCarregado.getMarca()).isEqualTo("MERCEDEZ-BENZ");
         assertThat(carroCarregado.getModelo()).isEqualTo("AXOR");
+        assertThat(carroCarregado.getAnoFabricacao()).isEqualTo(2010L);
+        assertThat(carroCarregado.getAnoModelo()).isEqualTo(2011L);
+        assertThat(carroCarregado.getCombustivel()).isSameAs(Combustivel.DIESEL);
     }
 
     // Read
@@ -112,13 +126,19 @@ public class VeiculoRepositoryTest {
 
     @Test
     public void update() {
-        Veiculo veiculo = loadCarro();
+        Carro veiculo = loadCarro();
         veiculo.setMarca("Nova marca");
         veiculo.setModelo("Novo modelo");
+        veiculo.setAnoFabricacao(2020L);
+        veiculo.setAnoModelo(2021L);
+        veiculo.setCombustivel(Combustivel.ALCOOL);
         this.repository.saveAndFlush(veiculo);
 
         assertThat(loadCarro().getMarca()).isEqualTo("Nova marca");
         assertThat(loadCarro().getModelo()).isEqualTo("Novo modelo");
+        assertThat(loadCarro().getAnoModelo()).isEqualTo(2021L);
+        assertThat(loadCarro().getAnoFabricacao()).isEqualTo(2020L);
+        assertThat(loadCarro().getCombustivel()).isSameAs(Combustivel.ALCOOL);
     }
 
     // Delete
@@ -134,6 +154,10 @@ public class VeiculoRepositoryTest {
         assertThat(carro.getId()).isEqualTo(CARRO_ID);
         assertThat(carro.getMarca()).isEqualTo("FORD");
         assertThat(carro.getModelo()).isEqualTo("KA");
+        assertThat(carro.getAnoFabricacao()).isEqualTo(2019L);
+        assertThat(carro.getAnoModelo()).isEqualTo(2020L);
+        assertThat(carro.getCombustivel()).isSameAs(Combustivel.FLEX);
+        assertThat(carro.getNumeroPortas()).isEqualTo(4);
     }
 
     private void assertMotoSucessfullyLoaded(Moto moto) {
@@ -141,6 +165,9 @@ public class VeiculoRepositoryTest {
         assertThat(moto.getId()).isEqualTo(MOTO_ID);
         assertThat(moto.getMarca()).isEqualTo("YAMAHA");
         assertThat(moto.getModelo()).isEqualTo("CC125");
+        assertThat(moto.getAnoFabricacao()).isEqualTo(2018L);
+        assertThat(moto.getAnoModelo()).isEqualTo(2018L);
+        assertThat(moto.getCombustivel()).isSameAs(Combustivel.GASOLINA);
     }
 
     private void assertCaminhaoSucessfullyLoaded(Caminhao caminhao) {
@@ -148,6 +175,9 @@ public class VeiculoRepositoryTest {
         assertThat(caminhao.getId()).isEqualTo(CAMINHAO_ID);
         assertThat(caminhao.getMarca()).isEqualTo("SCANIA");
         assertThat(caminhao.getModelo()).isEqualTo("SCANIA");
+        assertThat(caminhao.getAnoFabricacao()).isEqualTo(2020L);
+        assertThat(caminhao.getAnoModelo()).isEqualTo(2020L);
+        assertThat(caminhao.getCombustivel()).isSameAs(Combustivel.DIESEL);
     }
 
     private <T extends Veiculo> T saveAndLoad(T veiculo) {

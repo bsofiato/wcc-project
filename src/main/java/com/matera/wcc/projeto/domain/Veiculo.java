@@ -3,22 +3,9 @@ package com.matera.wcc.projeto.domain;
 
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
-/**
- * @todo colocar atributo <i>ano fabricacao</i>
- * @todo colocar atributo <i>ano modelo</i>
- * @todo colocar atributo <i>combustivel</i>
- */
 @Entity
 @Table(name = "VEICULO")
 @Inheritance(strategy= InheritanceType.SINGLE_TABLE)
@@ -35,6 +22,16 @@ public abstract class Veiculo {
 
     @Column(name = "MODELO")
     private String modelo;
+
+    @Column(name = "ANO_MODELO")
+    private Long anoModelo;
+
+    @Column(name = "ANO_FABRICACAO")
+    private Long anoFabricacao;
+
+    @Column(name = "COMBUSTIVEL")
+    @Enumerated(EnumType.STRING)
+    private Combustivel combustivel;
 
     public UUID getId() {
         return id;
@@ -55,4 +52,28 @@ public abstract class Veiculo {
     public String getModelo() { return modelo; }
 
     public void setModelo(String modelo) { this.modelo = modelo; }
+
+    public Long getAnoModelo() {
+        return anoModelo;
+    }
+
+    public void setAnoModelo(Long anoModelo) {
+        this.anoModelo = anoModelo;
+    }
+
+    public Long getAnoFabricacao() {
+        return anoFabricacao;
+    }
+
+    public void setAnoFabricacao(Long anoFabricacao) {
+        this.anoFabricacao = anoFabricacao;
+    }
+
+    public Combustivel getCombustivel() {
+        return combustivel;
+    }
+
+    public void setCombustivel(Combustivel combustivel) {
+        this.combustivel = combustivel;
+    }
 }
