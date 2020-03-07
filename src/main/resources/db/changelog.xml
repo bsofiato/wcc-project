@@ -16,6 +16,9 @@
             <column name="MARCA" type="VARCHAR(80)">
                 <constraints nullable="false"/>
             </column>
+            <column name="MODELO" type="VARCHAR(80)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         <createIndex tableName="VEICULO" indexName="VEICULO_TIPO_IDX">
             <column name="TIPO"></column>

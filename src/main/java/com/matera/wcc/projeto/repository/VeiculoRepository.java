@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
+/**
+ * @todo <i>extra</i> colocar busca paginada
+ */
 @Repository
 public interface VeiculoRepository extends JpaRepository<Veiculo, UUID> {
 }

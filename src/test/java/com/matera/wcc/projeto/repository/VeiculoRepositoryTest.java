@@ -20,6 +20,12 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * @todo Colocar os atributos novos em testes de escrita
+ * @todo Colocar os atributos novos em testes de leitura
+ * @todo Colocar os atributos novos em testes de alteração
+ * @todo <i>extra</i> Colocar testes de paginacao
+ */
 @DataJpaTest(showSql = true)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Sql("veiculo-repository-fixture.sql")
@@ -37,30 +43,36 @@ public class VeiculoRepositoryTest {
     public void createMoto() {
         Moto moto = new Moto();
         moto.setMarca("HONDA");
+        moto.setModelo("CC225");
 
         Moto motoCarregada = saveAndLoad(moto);
         assertThat(motoCarregada.getId()).isNotNull();
         assertThat(motoCarregada.getMarca()).isEqualTo("HONDA");
+        assertThat(motoCarregada.getModelo()).isEqualTo("CC225");
     }
 
     @Test
     public void createCarro() {
         Carro carro = new Carro();
         carro.setMarca("VOLKSWAGEN");
+        carro.setModelo("GOL");
 
         Carro carroCarregado = saveAndLoad(carro);
         assertThat(carroCarregado.getId()).isNotNull();
         assertThat(carroCarregado.getMarca()).isEqualTo("VOLKSWAGEN");
+        assertThat(carroCarregado.getModelo()).isEqualTo("GOL");
     }
 
     @Test
     public void createCaminhao() {
         Caminhao caminhao = new Caminhao();
         caminhao.setMarca("MERCEDEZ-BENZ");
+        caminhao.setModelo("AXOR");
 
         Caminhao carroCarregado = saveAndLoad(caminhao);
         assertThat(carroCarregado.getId()).isNotNull();
         assertThat(carroCarregado.getMarca()).isEqualTo("MERCEDEZ-BENZ");
+        assertThat(carroCarregado.getModelo()).isEqualTo("AXOR");
     }
 
     // Read
@@ -102,9 +114,11 @@ public class VeiculoRepositoryTest {
     public void update() {
         Veiculo veiculo = loadCarro();
         veiculo.setMarca("Nova marca");
+        veiculo.setModelo("Novo modelo");
         this.repository.saveAndFlush(veiculo);
 
         assertThat(loadCarro().getMarca()).isEqualTo("Nova marca");
+        assertThat(loadCarro().getModelo()).isEqualTo("Novo modelo");
     }
 
     // Delete
@@ -119,18 +133,21 @@ public class VeiculoRepositoryTest {
         assertThat(carro).isInstanceOf(Carro.class);
         assertThat(carro.getId()).isEqualTo(CARRO_ID);
         assertThat(carro.getMarca()).isEqualTo("FORD");
+        assertThat(carro.getModelo()).isEqualTo("KA");
     }
 
     private void assertMotoSucessfullyLoaded(Moto moto) {
         assertThat(moto).isInstanceOf(Moto.class);
         assertThat(moto.getId()).isEqualTo(MOTO_ID);
         assertThat(moto.getMarca()).isEqualTo("YAMAHA");
+        assertThat(moto.getModelo()).isEqualTo("CC125");
     }
 
     private void assertCaminhaoSucessfullyLoaded(Caminhao caminhao) {
         assertThat(caminhao).isInstanceOf(Caminhao.class);
         assertThat(caminhao.getId()).isEqualTo(CAMINHAO_ID);
         assertThat(caminhao.getMarca()).isEqualTo("SCANIA");
+        assertThat(caminhao.getModelo()).isEqualTo("SCANIA");
     }
 
     private <T extends Veiculo> T saveAndLoad(T veiculo) {

@@ -14,6 +14,11 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import java.util.UUID;
 
+/**
+ * @todo colocar atributo <i>ano fabricacao</i>
+ * @todo colocar atributo <i>ano modelo</i>
+ * @todo colocar atributo <i>combustivel</i>
+ */
 @Entity
 @Table(name = "VEICULO")
 @Inheritance(strategy= InheritanceType.SINGLE_TABLE)
@@ -27,6 +32,9 @@ public abstract class Veiculo {
 
     @Column(name = "MARCA")
     private String marca;
+
+    @Column(name = "MODELO")
+    private String modelo;
 
     public UUID getId() {
         return id;
@@ -43,4 +51,8 @@ public abstract class Veiculo {
     public void setMarca(String marca) {
         this.marca = marca;
     }
+
+    public String getModelo() { return modelo; }
+
+    public void setModelo(String modelo) { this.modelo = modelo; }
 }
