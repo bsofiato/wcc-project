@@ -27,4 +27,31 @@ public class VeiculoService {
     public Page<Veiculo> findAll(Pageable page) {
         return this.veiculoRepository.findAll(page);
     }
+
+    @Transactional
+    public UUID insert(Veiculo veiculo) {
+        return this.veiculoRepository.save(veiculo).getId();
+    }
+
+    @Transactional
+    public boolean delete(UUID uuid) {
+        Optional<Veiculo> veiculo = this.veiculoRepository.findById(uuid);
+        if (veiculo.isPresent()) {
+            this.veiculoRepository.delete(veiculo.get());
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Transactional
+    public boolean update(Veiculo veiculo) {
+        Optional<Veiculo> loadedVeiculo = this.veiculoRepository.findById(veiculo.getId());
+        if (loadedVeiculo.isPresent()) {
+            this.veiculoRepository.save(veiculo);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
