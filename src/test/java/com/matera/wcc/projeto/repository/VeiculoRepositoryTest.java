@@ -9,6 +9,9 @@ import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfigurati
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
@@ -17,9 +20,6 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @todo <i>extra</i> Colocar testes de paginacao
- */
 @DataJpaTest(showSql = true)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Sql("veiculo-repository-fixture.sql")
@@ -120,6 +120,27 @@ public class VeiculoRepositoryTest {
         assertCaminhaoSucessfullyLoaded((Caminhao) veiculos.get(0));
         assertCarroSucessfullyLoaded((Carro) veiculos.get(1));
         assertMotoSucessfullyLoaded((Moto) veiculos.get(2));
+    }
+
+
+    @Test
+    public void findAllPaginado() {
+        Pageable request = PageRequest.of(2, 1);
+
+        Page<Veiculo> veiculos = this.repository.findAll(request);
+
+        assertThat(veiculos.getTotalElements()).isEqualTo(3);
+        assertThat(veiculos.getContent()).hasSize(1);
+        assertMotoSucessfullyLoaded((Moto) veiculos.getContent().get(0));
+    }
+
+    @Test
+    public void findAllPaginadoPaginaInexistente() {
+        Pageable request = PageRequest.of(3, 1);
+
+        Page<Veiculo> veiculos = this.repository.findAll(request);
+        assertThat(veiculos.getTotalElements()).isEqualTo(3);
+        assertThat(veiculos.getContent()).isEmpty();
     }
 
     // Update
