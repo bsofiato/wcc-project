@@ -1,0 +1,195 @@
+{
+	"info": {
+		"_postman_id": "25cd28f7-925e-4b1a-a160-bc30b171693c",
+		"name": "Women Can Code",
+		"description": "Collection do postman para o projeto ministrado no [Women Can Code](http://conteudo.sharerh.com/womencancodebrasil)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Obter veiculos cadastrados",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/v1/veiculos?page=0&size=30",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"v1",
+						"veiculos"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "30"
+						}
+					]
+				},
+				"description": "Obtém os veículos cadastrados"
+			},
+			"response": []
+		},
+		{
+			"name": "Criar Carro",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f5af8837-ba90-471a-a131-995be94aec2c",
+						"exec": [
+							"let header = pm.response.headers.get(\"Location\");",
+							"if (header) {",
+							"    veiculoId = header.substring(header.lastIndexOf('/') + 1);",
+							"    pm.environment.set(\"veiculoId\", veiculoId);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"tipo\": \"carro\",\n\t\"marca\" : \"Volkswagen\",\n\t\"modelo\" : \"Gol\",\n\t\"combustivel\" : \"FLEX\",\n\t\"anoModelo\" : 2021,\n\t\"anoFabricacao\" : 2020,\n\t\"numeroPortas\" : 5\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/v1/veiculos",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"",
+						"v1",
+						"veiculos"
+					]
+				},
+				"description": "Cria um novo carro na base de dados. \n\n\nO id do carro criado é armazenado na variavel _veiculoId_ do ambiente do postman."
+			},
+			"response": []
+		},
+		{
+			"name": "Criar Moto",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f5af8837-ba90-471a-a131-995be94aec2c",
+						"exec": [
+							"let header = pm.response.headers.get(\"Location\");",
+							"if (header) {",
+							"    veiculoId = header.substring(header.lastIndexOf('/') + 1);",
+							"    pm.environment.set(\"veiculoId\", veiculoId);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"tipo\": \"moto\",\n\t\"marca\" : \"Yamaha\",\n\t\"modelo\" : \"CC125l\",\n\t\"combustivel\" : \"GASOLINA\",\n\t\"anoModelo\" : 2020,\n\t\"anoFabricacao\" : 2020\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/v1/veiculos",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"",
+						"v1",
+						"veiculos"
+					]
+				},
+				"description": "Cria uma nova moto na base de dados. \n\n\nO id da moto criada é armazenado na variavel _veiculoId_ do ambiente do postman."
+			},
+			"response": []
+		},
+		{
+			"name": "Criar Caminhão",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f5af8837-ba90-471a-a131-995be94aec2c",
+						"exec": [
+							"let header = pm.response.headers.get(\"Location\");",
+							"if (header) {",
+							"    veiculoId = header.substring(header.lastIndexOf('/') + 1);",
+							"    pm.environment.set(\"veiculoId\", veiculoId);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"tipo\": \"caminhao\",\n\t\"marca\" : \"Mercedez-Benz\",\n\t\"modelo\" : \"Atego\",\n\t\"combustivel\" : \"DIESEL\",\n\t\"anoModelo\" : 2020,\n\t\"anoFabricacao\" : 2021\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/v1/veiculos",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"",
+						"v1",
+						"veiculos"
+					]
+				},
+				"description": "Cria um novo caminhão na base de dados. \n\n\nO id do caminhão criado é armazenado na variavel _veiculoId_ do ambiente do postman."
+			},
+			"response": []
+		},
+		{
+			"name": "Obter veiculo cadastrado",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/v1/veiculos/{{veiculoId}}",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"v1",
+						"veiculos",
+						"{{veiculoId}}"
+					]
+				},
+				"description": "Obtém os veículos cadastrados através de um id armazenado na variavel _veiculoId_ do ambiente do postman."
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
