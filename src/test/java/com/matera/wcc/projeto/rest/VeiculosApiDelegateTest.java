@@ -32,8 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest
@@ -218,6 +217,116 @@ public class VeiculosApiDelegateTest {
         verify(service, times(1)).findById(VEICULO_ID);
     }
 
+
+    @Test
+    public void updateCarro() throws Exception {
+        doReturn(true).when(service).update(isA(Carro.class));
+
+        mockMvc.perform(updateRequest(carroDTO()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.tipo").value("carro"))
+                .andExpect(jsonPath("$.id").value(VEICULO_ID.toString()))
+                .andExpect(jsonPath("$.modelo").value("GOL"))
+                .andExpect(jsonPath("$.marca").value("VOLKSWAGEN"))
+                .andExpect(jsonPath("$.anoFabricacao").value(2018))
+                .andExpect(jsonPath("$.anoModelo").value(2019))
+                .andExpect(jsonPath("$.combustivel").value("ALCOOL"))
+                .andExpect(jsonPath("$.numeroPortas").value(5));
+
+        verify(service, times(1)).update(veiculoSalvo.capture());
+
+        assertThat(veiculoSalvo.getValue()).isInstanceOf(Carro.class);
+        assertThat(veiculoSalvo.getValue().getId()).isEqualTo(VEICULO_ID);
+        assertThat(veiculoSalvo.getValue().getAnoFabricacao()).isEqualTo(2018);
+        assertThat(veiculoSalvo.getValue().getAnoModelo()).isEqualTo(2019);
+        assertThat(veiculoSalvo.getValue().getCombustivel()).isSameAs(Combustivel.ALCOOL);
+        assertThat(veiculoSalvo.getValue().getModelo()).isEqualTo("GOL");
+        assertThat(veiculoSalvo.getValue().getMarca()).isEqualTo("VOLKSWAGEN");
+        assertThat(veiculoSalvo.getValue()).extracting("numeroPortas").isEqualTo(5L);
+    }
+
+    @Test
+    public void updateMoto() throws Exception {
+        doReturn(true).when(service).update(isA(Moto.class));
+
+        mockMvc.perform(updateRequest(motoDTO()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.tipo").value("moto"))
+                .andExpect(jsonPath("$.id").value(VEICULO_ID.toString()))
+                .andExpect(jsonPath("$.modelo").value("CC225"))
+                .andExpect(jsonPath("$.marca").value("HONDA"))
+                .andExpect(jsonPath("$.anoFabricacao").value(2015))
+                .andExpect(jsonPath("$.anoModelo").value(2016))
+                .andExpect(jsonPath("$.combustivel").value("GASOLINA"));
+
+        verify(service, times(1)).update(veiculoSalvo.capture());
+
+        assertThat(veiculoSalvo.getValue()).isInstanceOf(Moto.class);
+        assertThat(veiculoSalvo.getValue().getId()).isEqualTo(VEICULO_ID);
+        assertThat(veiculoSalvo.getValue().getAnoFabricacao()).isEqualTo(2015);
+        assertThat(veiculoSalvo.getValue().getAnoModelo()).isEqualTo(2016);
+        assertThat(veiculoSalvo.getValue().getCombustivel()).isSameAs(Combustivel.GASOLINA);
+        assertThat(veiculoSalvo.getValue().getModelo()).isEqualTo("CC225");
+        assertThat(veiculoSalvo.getValue().getMarca()).isEqualTo("HONDA");
+    }
+
+    @Test
+    public void updateCaminhao() throws Exception {
+        doReturn(true).when(service).update(isA(Caminhao.class));
+
+        mockMvc.perform(updateRequest(caminhaoDTO()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.tipo").value("caminhao"))
+                .andExpect(jsonPath("$.id").value(VEICULO_ID.toString()))
+                .andExpect(jsonPath("$.modelo").value("AXOR"))
+                .andExpect(jsonPath("$.marca").value("MERCEDEZ-BENZ"))
+                .andExpect(jsonPath("$.anoFabricacao").value("2010"))
+                .andExpect(jsonPath("$.anoModelo").value("2011"))
+                .andExpect(jsonPath("$.combustivel").value("DIESEL"));
+
+        verify(service, times(1)).update(veiculoSalvo.capture());
+
+        assertThat(veiculoSalvo.getValue()).isInstanceOf(Caminhao.class);
+        assertThat(veiculoSalvo.getValue().getId()).isEqualTo(VEICULO_ID);
+        assertThat(veiculoSalvo.getValue().getAnoFabricacao()).isEqualTo(2010);
+        assertThat(veiculoSalvo.getValue().getAnoModelo()).isEqualTo(2011);
+        assertThat(veiculoSalvo.getValue().getCombustivel()).isSameAs(Combustivel.DIESEL);
+        assertThat(veiculoSalvo.getValue().getModelo()).isEqualTo("AXOR");
+        assertThat(veiculoSalvo.getValue().getMarca()).isEqualTo("MERCEDEZ-BENZ");
+    }
+
+    @Test
+    public void updateVehicleNotFound() throws Exception {
+        doReturn(false).when(service).update(isA(Carro.class));
+
+        mockMvc.perform(updateRequest(carroDTO()))
+                .andExpect(status().isNotFound());
+
+        verify(service, times(1)).update(veiculoSalvo.capture());
+    }
+
+    @Test
+    public void deleteVehicle() throws Exception {
+        doReturn(true).when(service).delete(VEICULO_ID);
+
+        mockMvc.perform(deleteRequest())
+                .andExpect(status().isNoContent());
+
+        verify(service, times(1)).delete(VEICULO_ID);
+    }
+
+
+    @Test
+    public void deleteVehicleNotFound() throws Exception {
+        doReturn(false).when(service).delete(VEICULO_ID);
+
+        mockMvc.perform(deleteRequest())
+                .andExpect(status().isNotFound());
+
+        verify(service, times(1)).delete(VEICULO_ID);
+    }
+
+    private RequestBuilder deleteRequest() { return delete("/v1/veiculos/{id}", VEICULO_ID.toString()); }
     private MockHttpServletRequestBuilder findOneRequest() {
         return get("/v1/veiculos/{id}", VEICULO_ID);
     }
@@ -227,6 +336,10 @@ public class VeiculosApiDelegateTest {
 
     private RequestBuilder createRequest(VeiculoDTO veiculoDTO)  throws Exception {
         return post("/v1/veiculos").contentType(MediaType.APPLICATION_JSON).content(toJson(veiculoDTO));
+    }
+
+    private RequestBuilder updateRequest(VeiculoDTO veiculoDTO) throws Exception {
+        return put("/v1/veiculos/{id}", VEICULO_ID.toString()).contentType(MediaType.APPLICATION_JSON).content(toJson(veiculoDTO.id(VEICULO_ID)));
     }
 
     private String toJson(VeiculoDTO veiculoDTO) throws Exception {
