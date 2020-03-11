@@ -14,6 +14,23 @@ tags:
 
 paths:
   /veiculos:
+    post:
+      operationId: createVeiculo
+      tags: 
+        - Veiculos
+      summary: Cria um novo veiculo
+      description:  Cria um novo veiculo
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/VeiculoDTO'
+      responses:
+        201:
+          description: Veículo cadastrado
+          headers:
+            Location:
+              $ref: '#/components/headers/Location'
     get:
       operationId: getVeiculos
       tags: 
@@ -144,6 +161,11 @@ components:
         type: integer
         format: int32
       description: Número total de itens de uma consulta paginada.
+    Location:
+      schema:
+        type: string
+        format: uri
+      description: URI identificando o veículo recém cadrastado.
   parameters:
     veiculoId:
       in: path
@@ -152,6 +174,7 @@ components:
         type: string
         format: uuid
       description: Identificador do veículo desejado
+      required: true
     page:
       in: query
       name: page

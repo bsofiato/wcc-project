@@ -13,10 +13,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -46,14 +50,31 @@ public class VeiculosApiDelegateImpl implements VeiculosApiDelegate {
         return ResponseEntity.of(this.veiculoService.findById(veiculoId).map(this::convert));
     }
 
+    @Override
+    public ResponseEntity<Void> createVeiculo(VeiculoDTO veiculoDTO) throws Exception {
+        UUID id = this.veiculoService.insert(convert(veiculoDTO));
+        return ResponseEntity.created(location(id)).build();
+    }
+
     @PostConstruct
     public void configureModelMapper() {
         modelMapper.createTypeMap(Carro.class, VeiculoDTO.class).setConverter(ctx -> modelMapper.map(ctx.getSource(), CarroDTO.class));
         modelMapper.createTypeMap(Moto.class, VeiculoDTO.class).setConverter(ctx -> modelMapper.map(ctx.getSource(), MotoDTO.class));
         modelMapper.createTypeMap(Caminhao.class, VeiculoDTO.class).setConverter(ctx -> modelMapper.map(ctx.getSource(), CaminhaoDTO.class));
+
+        modelMapper.createTypeMap(CarroDTO.class, Veiculo.class).setConverter(ctx -> modelMapper.map(ctx.getSource(), Carro.class));
+        modelMapper.createTypeMap(MotoDTO.class, Veiculo.class).setConverter(ctx -> modelMapper.map(ctx.getSource(), Moto.class));
+        modelMapper.createTypeMap(CaminhaoDTO.class, Veiculo.class).setConverter(ctx -> modelMapper.map(ctx.getSource(), Caminhao.class));
+    }
+
+    private URI location(UUID id) {
+        return UriComponentsBuilder.fromPath("/v1/veiculos/{id}").build(id.toString());
     }
 
     private VeiculoDTO convert(Veiculo veiculo) {
         return this.modelMapper.map(veiculo, VeiculoDTO.class);
+    }
+    private Veiculo convert(VeiculoDTO veiculo) {
+        return this.modelMapper.map(veiculo, Veiculo.class);
     }
 }

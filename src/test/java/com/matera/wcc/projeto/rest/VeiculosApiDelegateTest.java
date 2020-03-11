@@ -1,11 +1,15 @@
 package com.matera.wcc.projeto.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matera.wcc.projeto.config.ModelMapperConfiguration;
 import com.matera.wcc.projeto.domain.*;
+import com.matera.wcc.projeto.rest.dto.*;
 import com.matera.wcc.projeto.service.VeiculoService;
 import org.hamcrest.collection.IsEmptyCollection;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -13,7 +17,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.util.ArrayList;
@@ -21,10 +28,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest
@@ -37,10 +46,73 @@ public class VeiculosApiDelegateTest {
     private static final UUID VEICULO_ID = UUID.fromString("fe5c20ff-c863-407a-891d-e9fef61d3114");
 
     @Autowired
+    private ObjectMapper mapper;
+
+    @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private VeiculoService service;
+
+    @Captor
+    private ArgumentCaptor<Veiculo> veiculoSalvo;
+
+
+    @Test
+    public void createCarro() throws Exception {
+        doReturn(VEICULO_ID).when(service).insert(isA(Carro.class));
+
+        mockMvc.perform(createRequest(carroDTO()))
+            .andExpect(status().isCreated())
+            .andExpect(locationToPointToNewlyCreatedVeiculo());
+
+        verify(service, times(1)).insert(veiculoSalvo.capture());
+
+        assertThat(veiculoSalvo.getValue()).isInstanceOf(Carro.class);
+        assertThat(veiculoSalvo.getValue().getAnoFabricacao()).isEqualTo(2018);
+        assertThat(veiculoSalvo.getValue().getAnoModelo()).isEqualTo(2019);
+        assertThat(veiculoSalvo.getValue().getCombustivel()).isSameAs(Combustivel.ALCOOL);
+        assertThat(veiculoSalvo.getValue().getModelo()).isEqualTo("GOL");
+        assertThat(veiculoSalvo.getValue().getMarca()).isEqualTo("VOLKSWAGEN");
+        assertThat(veiculoSalvo.getValue()).extracting("numeroPortas").isEqualTo(5L);
+    }
+
+    @Test
+    public void createMoto() throws Exception {
+        doReturn(VEICULO_ID).when(service).insert(isA(Moto.class));
+
+        mockMvc.perform(createRequest(motoDTO()))
+                .andExpect(status().isCreated())
+                .andExpect(locationToPointToNewlyCreatedVeiculo());
+
+        verify(service, times(1)).insert(veiculoSalvo.capture());
+
+        assertThat(veiculoSalvo.getValue()).isInstanceOf(Moto.class);
+        assertThat(veiculoSalvo.getValue().getAnoFabricacao()).isEqualTo(2015);
+        assertThat(veiculoSalvo.getValue().getAnoModelo()).isEqualTo(2016);
+        assertThat(veiculoSalvo.getValue().getCombustivel()).isSameAs(Combustivel.GASOLINA);
+        assertThat(veiculoSalvo.getValue().getModelo()).isEqualTo("CC225");
+        assertThat(veiculoSalvo.getValue().getMarca()).isEqualTo("HONDA");
+    }
+
+    @Test
+    public void createCaminhao() throws Exception {
+        doReturn(VEICULO_ID).when(service).insert(isA(Caminhao.class));
+
+        mockMvc.perform(createRequest(caminhaoDTO()))
+                .andExpect(status().isCreated())
+                .andExpect(locationToPointToNewlyCreatedVeiculo());
+
+        verify(service, times(1)).insert(veiculoSalvo.capture());
+
+        assertThat(veiculoSalvo.getValue()).isInstanceOf(Caminhao.class);
+        assertThat(veiculoSalvo.getValue().getAnoFabricacao()).isEqualTo(2010);
+        assertThat(veiculoSalvo.getValue().getAnoModelo()).isEqualTo(2011);
+        assertThat(veiculoSalvo.getValue().getCombustivel()).isSameAs(Combustivel.DIESEL);
+        assertThat(veiculoSalvo.getValue().getModelo()).isEqualTo("AXOR");
+        assertThat(veiculoSalvo.getValue().getMarca()).isEqualTo("MERCEDEZ-BENZ");
+    }
+
 
     @Test
     public void findAllEmpty() throws Exception {
@@ -149,9 +221,20 @@ public class VeiculosApiDelegateTest {
     private MockHttpServletRequestBuilder findOneRequest() {
         return get("/v1/veiculos/{id}", VEICULO_ID);
     }
-
     private MockHttpServletRequestBuilder findAllRequest(int page, int size) {
         return get("/v1/veiculos").param("page", String.valueOf(page)).param("size", String.valueOf(size));
+    }
+
+    private RequestBuilder createRequest(VeiculoDTO veiculoDTO)  throws Exception {
+        return post("/v1/veiculos").contentType(MediaType.APPLICATION_JSON).content(toJson(veiculoDTO));
+    }
+
+    private String toJson(VeiculoDTO veiculoDTO) throws Exception {
+        return this.mapper.writeValueAsString(veiculoDTO);
+    }
+
+    private ResultMatcher locationToPointToNewlyCreatedVeiculo() {
+        return header().string("Location", "/v1/veiculos/" + VEICULO_ID.toString());
     }
 
     private Page<Veiculo> fullPage(int page, int size) {
@@ -162,7 +245,7 @@ public class VeiculosApiDelegateTest {
         return new PageImpl<>(content, PageRequest.of(page, size), 100);
     }
 
-    public Moto moto() {
+    private Moto moto() {
         Moto moto = new Moto();
         moto.setId(UUID.fromString("c6cea841-0040-4c8a-8dab-a6aca8bbcd4c"));
         moto.setMarca("HONDA");
@@ -173,7 +256,7 @@ public class VeiculosApiDelegateTest {
         return moto;
     }
 
-    public Carro carro() {
+    private Carro carro() {
         Carro carro = new Carro();
         carro.setId(UUID.fromString("6bf65456-072c-489c-bc48-3f4130b774b3"));
         carro.setMarca("VOLKSWAGEN");
@@ -194,6 +277,39 @@ public class VeiculosApiDelegateTest {
         caminhao.setAnoFabricacao(2010L);
         caminhao.setAnoModelo(2011L);
         caminhao.setCombustivel(Combustivel.DIESEL);
+
+        return caminhao;
+    }
+
+    private MotoDTO motoDTO() {
+        MotoDTO moto = new MotoDTO();
+        moto.setMarca("HONDA");
+        moto.setModelo("CC225");
+        moto.setAnoFabricacao(2015);
+        moto.setAnoModelo(2016);
+        moto.setCombustivel(CombustivelDTO.GASOLINA);
+        return moto;
+    }
+
+    private CarroDTO carroDTO() {
+        CarroDTO carro = new CarroDTO();
+        carro.setMarca("VOLKSWAGEN");
+        carro.setModelo("GOL");
+        carro.setAnoFabricacao(2018);
+        carro.setAnoModelo(2019);
+        carro.setCombustivel(CombustivelDTO.ALCOOL);
+        carro.setNumeroPortas(5);
+
+        return carro;
+    }
+
+    private CaminhaoDTO caminhaoDTO() {
+        CaminhaoDTO caminhao = new CaminhaoDTO();
+        caminhao.setMarca("MERCEDEZ-BENZ");
+        caminhao.setModelo("AXOR");
+        caminhao.setAnoFabricacao(2010);
+        caminhao.setAnoModelo(2011);
+        caminhao.setCombustivel(CombustivelDTO.DIESEL);
 
         return caminhao;
     }
