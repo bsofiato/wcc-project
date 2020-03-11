@@ -209,6 +209,144 @@
 				"description": "Delete veículo associado a um id. Esse id é armazenado na variavel _veiculoId_ do ambiente do postman."
 			},
 			"response": []
+		},
+		{
+			"name": "Atualizar Carro",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f5af8837-ba90-471a-a131-995be94aec2c",
+						"exec": [
+							"let header = pm.response.headers.get(\"Location\");",
+							"if (header) {",
+							"    veiculoId = header.substring(header.lastIndexOf('/') + 1);",
+							"    pm.environment.set(\"veiculoId\", veiculoId);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"tipo\": \"carro\",\n\t\"marca\" : \"Volkswagen\",\n\t\"modelo\" : \"Bora\",\n\t\"combustivel\" : \"GASOLINA\",\n\t\"anoModelo\" : 2010,\n\t\"anoFabricacao\" : 2011,\n\t\"numeroPortas\" : 5\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/v1/veiculos/{{veiculoId}}",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"",
+						"v1",
+						"veiculos",
+						"{{veiculoId}}"
+					]
+				},
+				"description": "Atualiza um carro na base de dados. \n\n\nO id do carro atualizado e fornecido pela variavel _veiculoId_ do ambiente do postman."
+			},
+			"response": []
+		},
+		{
+			"name": "Atualizar Moto",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f5af8837-ba90-471a-a131-995be94aec2c",
+						"exec": [
+							"let header = pm.response.headers.get(\"Location\");",
+							"if (header) {",
+							"    veiculoId = header.substring(header.lastIndexOf('/') + 1);",
+							"    pm.environment.set(\"veiculoId\", veiculoId);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"tipo\": \"moto\",\n\t\"marca\" : \"Honda\",\n\t\"modelo\" : \"Bis\",\n\t\"combustivel\" : \"GASOLINA\",\n\t\"anoModelo\" : 2016,\n\t\"anoFabricacao\" : 2016\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/v1/veiculos/{{veiculoId}}",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"",
+						"v1",
+						"veiculos",
+						"{{veiculoId}}"
+					]
+				},
+				"description": "Atualiza uma moto na base de dados. \n\n\nO id da moto atualizada e fornecido pela variavel _veiculoId_ do ambiente do postman."
+			},
+			"response": []
+		},
+		{
+			"name": "Atualizar Caminhao",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f5af8837-ba90-471a-a131-995be94aec2c",
+						"exec": [
+							"let header = pm.response.headers.get(\"Location\");",
+							"if (header) {",
+							"    veiculoId = header.substring(header.lastIndexOf('/') + 1);",
+							"    pm.environment.set(\"veiculoId\", veiculoId);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"tipo\": \"caminhao\",\n\t\"marca\" : \"Scania\",\n\t\"modelo\" : \"V8\",\n\t\"combustivel\" : \"DIESEL\",\n\t\"anoModelo\" : 2020,\n\t\"anoFabricacao\" : 2021\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/v1/veiculos/{{veiculoId}}",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"",
+						"v1",
+						"veiculos",
+						"{{veiculoId}}"
+					]
+				},
+				"description": "Atualiza um caminhão na base de dados. \n\n\nO id do caminhão atualizado e fornecido pela variavel _veiculoId_ do ambiente do postman."
+			},
+			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}

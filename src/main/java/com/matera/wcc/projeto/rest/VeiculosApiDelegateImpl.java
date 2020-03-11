@@ -57,6 +57,16 @@ public class VeiculosApiDelegateImpl implements VeiculosApiDelegate {
     }
 
     @Override
+    public ResponseEntity<VeiculoDTO> updateVeiculo(UUID veiculoId, VeiculoDTO veiculoDTO) throws Exception {
+        VeiculoDTO veiculoDTOWithId = veiculoDTO.id(veiculoId);
+        if (this.veiculoService.update(convert(veiculoDTOWithId))) {
+            return ResponseEntity.ok(veiculoDTOWithId);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Override
     public ResponseEntity<Void> deleteVeiculo(UUID veiculoId) throws Exception {
         if (this.veiculoService.delete(veiculoId)) {
             return ResponseEntity.noContent().build();
@@ -64,6 +74,8 @@ public class VeiculosApiDelegateImpl implements VeiculosApiDelegate {
             return ResponseEntity.notFound().build();
         }
     }
+
+
 
     @PostConstruct
     public void configureModelMapper() {

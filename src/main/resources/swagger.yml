@@ -59,6 +59,28 @@ paths:
   /veiculos/{veiculoId}:
     parameters: 
       - $ref: '#/components/parameters/veiculoId'
+    put:
+      operationId: updateVeiculo
+      tags:
+        - Veiculos
+      summary: Atualiza o veiculo associado ao id fornecido
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/VeiculoDTO'
+      responses:
+        200:
+          description: Veiculo atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VeiculoDTO'
+        404:
+          description: Não existe veículo com o id fornecido
+        default:
+          description: Erro desconhecido
+                
     delete:
       operationId: deleteVeiculo
       tags:
