@@ -189,6 +189,26 @@
 				"description": "Obtém os veículos cadastrados através de um id armazenado na variavel _veiculoId_ do ambiente do postman."
 			},
 			"response": []
+		},
+		{
+			"name": "Deletar veiculo cadastrado",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/v1/veiculos/{{veiculoId}}",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"v1",
+						"veiculos",
+						"{{veiculoId}}"
+					]
+				},
+				"description": "Delete veículo associado a um id. Esse id é armazenado na variavel _veiculoId_ do ambiente do postman."
+			},
+			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}

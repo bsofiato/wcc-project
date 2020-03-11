@@ -55,14 +55,27 @@ paths:
                 $ref: '#/components/schemas/VeiculosDTO'
         default:
           description: Erro desconhecido
+          
   /veiculos/{veiculoId}:
+    parameters: 
+      - $ref: '#/components/parameters/veiculoId'
+    delete:
+      operationId: deleteVeiculo
+      tags:
+        - Veiculos
+      summary: Dado um id, deleta o veículo correspondente
+      responses:
+        204:
+          description: Veículo deletado com sucesso
+        404:
+          description: Não existe veículo com o id fornecido
+        default:
+          description: Erro desconhecido
     get:
       operationId: getVeiculo
       tags:
         - Veiculos
       summary: Dado um id, obtém o veículo correspondente
-      parameters: 
-        - $ref: '#/components/parameters/veiculoId'
       responses:
         200:
           description: Veículo associado ao ID fornecido

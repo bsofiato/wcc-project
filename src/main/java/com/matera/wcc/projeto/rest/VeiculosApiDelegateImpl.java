@@ -56,6 +56,15 @@ public class VeiculosApiDelegateImpl implements VeiculosApiDelegate {
         return ResponseEntity.created(location(id)).build();
     }
 
+    @Override
+    public ResponseEntity<Void> deleteVeiculo(UUID veiculoId) throws Exception {
+        if (this.veiculoService.delete(veiculoId)) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PostConstruct
     public void configureModelMapper() {
         modelMapper.createTypeMap(Carro.class, VeiculoDTO.class).setConverter(ctx -> modelMapper.map(ctx.getSource(), CarroDTO.class));
