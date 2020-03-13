@@ -1,6 +1,7 @@
 package com.matera.wcc.projeto.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.matera.wcc.projeto.config.ErrorHandlingConfiguration;
 import com.matera.wcc.projeto.config.ModelMapperConfiguration;
 import com.matera.wcc.projeto.domain.*;
 import com.matera.wcc.projeto.rest.dto.*;
@@ -8,6 +9,10 @@ import com.matera.wcc.projeto.service.VeiculoService;
 import org.hamcrest.collection.IsEmptyCollection;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -35,14 +42,17 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest
+@WebMvcTest()
 @Import({
+    ErrorHandlingConfiguration.class,
     ModelMapperConfiguration.class,
     VeiculosApiDelegateImpl.class
 })
 public class VeiculosApiDelegateTest {
 
     private static final UUID VEICULO_ID = UUID.fromString("fe5c20ff-c863-407a-891d-e9fef61d3114");
+    private static final String INVALID_MODELO = "AHBHUSUAHUADGYAGYDAGDYUUHSDUHIAUSHIAHUIDYADGYADYUSHAHUSDUIADHUIHAUIDHUDAHUIDAHUIAUHDHUADSIUDYGADGYUADYUHUIDAHUDAHUD";
+    private static final String INVALID_MARCA = "AHBHUSUAHUADGYAGYDAGDYUUHSDUHIAUSHIAHUIDYADGYADYUSHAHUSDUIADHUIHAUIDHUDAHUIDAHUIAUHDHUADSIUDYGADGYUADYUHUIDAHUDAHUD";
 
     @Autowired
     private ObjectMapper mapper;
@@ -56,6 +66,12 @@ public class VeiculosApiDelegateTest {
     @Captor
     private ArgumentCaptor<Veiculo> veiculoSalvo;
 
+
+    @ParameterizedTest(name = "O resultado da inserção {1} deve 400 - Bad Request")
+    @MethodSource("invalidVehicles")
+    public void createBadRequest(VeiculoDTO veiculo) throws Exception {
+        mockMvc.perform(createRequest(veiculo)).andExpect(status().isBadRequest());
+    }
 
     @Test
     public void createCarro() throws Exception {
@@ -110,6 +126,19 @@ public class VeiculosApiDelegateTest {
         assertThat(veiculoSalvo.getValue().getCombustivel()).isSameAs(Combustivel.DIESEL);
         assertThat(veiculoSalvo.getValue().getModelo()).isEqualTo("AXOR");
         assertThat(veiculoSalvo.getValue().getMarca()).isEqualTo("MERCEDEZ-BENZ");
+    }
+
+    @ParameterizedTest(name = "O resultado da chamada de busca de veiculos com os parametros page={0} e size={1} deve ser 400 (Bad request)")
+    @CsvSource({
+        ",10",
+        "0,",
+        "-1, 10",
+        "0, -1",
+        "0, 101",
+        "0, 0"
+    })
+    public void findAllBadRequest(Integer page, Integer size) throws Exception {
+        mockMvc.perform(findAllRequest(page, size)).andExpect(status().isBadRequest());
     }
 
 
@@ -215,6 +244,12 @@ public class VeiculosApiDelegateTest {
                 .andExpect(jsonPath("$.combustivel").value("DIESEL"));
 
         verify(service, times(1)).findById(VEICULO_ID);
+    }
+
+    @ParameterizedTest(name = "O resultado da inserção {1} deve 400 - Bad Request")
+    @MethodSource("invalidVehicles")
+    public void updateBadRequest(VeiculoDTO veiculo) throws Exception {
+        mockMvc.perform(updateRequest(veiculo)).andExpect(status().isBadRequest());
     }
 
 
@@ -326,12 +361,15 @@ public class VeiculosApiDelegateTest {
         verify(service, times(1)).delete(VEICULO_ID);
     }
 
+
     private RequestBuilder deleteRequest() { return delete("/v1/veiculos/{id}", VEICULO_ID.toString()); }
     private MockHttpServletRequestBuilder findOneRequest() {
         return get("/v1/veiculos/{id}", VEICULO_ID);
     }
-    private MockHttpServletRequestBuilder findAllRequest(int page, int size) {
-        return get("/v1/veiculos").param("page", String.valueOf(page)).param("size", String.valueOf(size));
+    private MockHttpServletRequestBuilder findAllRequest(Integer page, Integer size) {
+        return get("/v1/veiculos")
+            .param("page", (page == null) ? null : page.toString())
+            .param("size", (size == null) ? null : size.toString());
     }
 
     private RequestBuilder createRequest(VeiculoDTO veiculoDTO)  throws Exception {
@@ -394,7 +432,7 @@ public class VeiculosApiDelegateTest {
         return caminhao;
     }
 
-    private MotoDTO motoDTO() {
+    private static MotoDTO motoDTO() {
         MotoDTO moto = new MotoDTO();
         moto.setMarca("HONDA");
         moto.setModelo("CC225");
@@ -404,7 +442,7 @@ public class VeiculosApiDelegateTest {
         return moto;
     }
 
-    private CarroDTO carroDTO() {
+    private static CarroDTO carroDTO() {
         CarroDTO carro = new CarroDTO();
         carro.setMarca("VOLKSWAGEN");
         carro.setModelo("GOL");
@@ -416,7 +454,7 @@ public class VeiculosApiDelegateTest {
         return carro;
     }
 
-    private CaminhaoDTO caminhaoDTO() {
+    private static CaminhaoDTO caminhaoDTO() {
         CaminhaoDTO caminhao = new CaminhaoDTO();
         caminhao.setMarca("MERCEDEZ-BENZ");
         caminhao.setModelo("AXOR");
@@ -426,4 +464,30 @@ public class VeiculosApiDelegateTest {
 
         return caminhao;
     }
+
+    private static Stream<Arguments> invalidVehicles() {
+        return Stream.of(
+            Arguments.of(carroDTO().modelo(INVALID_MODELO), "carro cujo modelo tem tamanho maior que 80"),
+            Arguments.of(motoDTO().modelo(INVALID_MODELO), "moto cujo modelo tem tamanho maior que 80"),
+            Arguments.of(caminhaoDTO().modelo(INVALID_MODELO), "caminhão cujo modelo tem tamanho maior que 80"),
+            Arguments.of(carroDTO().marca(INVALID_MARCA), "carro cuja marca tem tamanho maior que 80"),
+            Arguments.of(motoDTO().marca(INVALID_MARCA), "moto cuja marca tem tamanho maior que 80"),
+            Arguments.of(caminhaoDTO().marca(INVALID_MARCA), "caminhão cuja marca tem tamanho maior que 80"),
+            Arguments.of(carroDTO().anoFabricacao(1899), "carro cujo ano de fabricacao é menor de 1900"),
+            Arguments.of(motoDTO().anoFabricacao(1899), "moto cujo ano de fabricação é menor que 1900"),
+            Arguments.of(caminhaoDTO().anoFabricacao(1899), "caminhão cujo ano de fabricação é menor que 1900"),
+            Arguments.of(carroDTO().anoFabricacao(10000), "carro cujo ano de fabricacao é maior que 9999"),
+            Arguments.of(motoDTO().anoFabricacao(10000), "moto cujo ano de fabricação é maior que 9999"),
+            Arguments.of(caminhaoDTO().anoFabricacao(10000), "caminhão cujo ano de fabricação é maior que 9999"),
+            Arguments.of(carroDTO().anoModelo(1899), "carro cujo ano de modelo é menor de 1900"),
+            Arguments.of(motoDTO().anoModelo(1899), "moto cujo ano de modelo é menor que 1900"),
+            Arguments.of(caminhaoDTO().anoModelo(1899), "caminhão cujo ano de modelo é menor que 1900"),
+            Arguments.of(carroDTO().anoModelo(10000), "carro cujo ano de modelo é maior que 9999"),
+            Arguments.of(motoDTO().anoModelo(10000), "moto cujo ano de modelo é maior que 9999"),
+            Arguments.of(caminhaoDTO().anoModelo(10000), "caminhão cujo ano de modelo é maior que 9999"),
+            Arguments.of(carroDTO().numeroPortas(0), "carro cujo numero de portas é menor que 1"),
+            Arguments.of(carroDTO().numeroPortas(10), "carro cujo numero de portas é maior que 9")
+        );
+    }
+
 }
