@@ -19,8 +19,8 @@ public class VeiculoService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Veiculo> findById(UUID id) {
-        return this.veiculoRepository.findById(id);
+    public Veiculo findById(UUID id) throws VeiculoNaoEncontradoException {
+        return this.veiculoRepository.findById(id).orElseThrow(() -> new VeiculoNaoEncontradoException(id));
     }
 
     @Transactional(readOnly = true)
@@ -34,24 +34,20 @@ public class VeiculoService {
     }
 
     @Transactional
-    public boolean delete(UUID uuid) {
-        Optional<Veiculo> veiculo = this.veiculoRepository.findById(uuid);
-        if (veiculo.isPresent()) {
-            this.veiculoRepository.delete(veiculo.get());
-            return true;
-        } else {
-            return false;
-        }
+    public void delete(UUID uuid) throws VeiculoNaoEncontradoException {
+        ifExists(uuid, () -> this.veiculoRepository.deleteById(uuid));
     }
 
     @Transactional
-    public boolean update(Veiculo veiculo) {
-        Optional<Veiculo> loadedVeiculo = this.veiculoRepository.findById(veiculo.getId());
-        if (loadedVeiculo.isPresent()) {
+    public void update(Veiculo veiculo) throws VeiculoNaoEncontradoException {
+        ifExists(veiculo.getId(), () -> {
             this.veiculoRepository.save(veiculo);
-            return true;
-        } else {
-            return false;
+        });
+    }
+
+    private void ifExists(UUID uuid, Runnable exec) throws VeiculoNaoEncontradoException {
+        if (this.findById(uuid) != null) {
+            exec.run();
         }
     }
 }

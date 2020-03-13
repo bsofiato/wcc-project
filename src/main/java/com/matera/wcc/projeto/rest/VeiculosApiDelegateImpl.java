@@ -8,6 +8,7 @@ import com.matera.wcc.projeto.rest.dto.CaminhaoDTO;
 import com.matera.wcc.projeto.rest.dto.CarroDTO;
 import com.matera.wcc.projeto.rest.dto.MotoDTO;
 import com.matera.wcc.projeto.rest.dto.VeiculoDTO;
+import com.matera.wcc.projeto.service.VeiculoNaoEncontradoException;
 import com.matera.wcc.projeto.service.VeiculoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -47,7 +48,11 @@ public class VeiculosApiDelegateImpl implements VeiculosApiDelegate {
 
     @Override
     public ResponseEntity<VeiculoDTO> getVeiculo(UUID veiculoId) throws Exception {
-        return ResponseEntity.of(this.veiculoService.findById(veiculoId).map(this::convert));
+        try {
+            return ResponseEntity.ok(convert(this.veiculoService.findById(veiculoId)));
+        } catch (VeiculoNaoEncontradoException ex) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Override
@@ -58,24 +63,24 @@ public class VeiculosApiDelegateImpl implements VeiculosApiDelegate {
 
     @Override
     public ResponseEntity<VeiculoDTO> updateVeiculo(UUID veiculoId, VeiculoDTO veiculoDTO) throws Exception {
-        VeiculoDTO veiculoDTOWithId = veiculoDTO.id(veiculoId);
-        if (this.veiculoService.update(convert(veiculoDTOWithId))) {
+        try {
+            VeiculoDTO veiculoDTOWithId = veiculoDTO.id(veiculoId);
+            this.veiculoService.update(convert(veiculoDTOWithId));
             return ResponseEntity.ok(veiculoDTOWithId);
-        } else {
+        } catch (VeiculoNaoEncontradoException ex) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @Override
     public ResponseEntity<Void> deleteVeiculo(UUID veiculoId) throws Exception {
-        if (this.veiculoService.delete(veiculoId)) {
+        try {
+            this.veiculoService.delete(veiculoId);
             return ResponseEntity.noContent().build();
-        } else {
+        } catch (VeiculoNaoEncontradoException ex) {
             return ResponseEntity.notFound().build();
         }
     }
-
-
 
     @PostConstruct
     public void configureModelMapper() {

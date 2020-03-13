@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,16 +53,16 @@ public class VeiculoServiceTest {
     public void notFoundById() {
         doReturn(Optional.empty()).when(repository).findById(VEICULO_ID);
 
-        assertThat(service.findById(VEICULO_ID)).isEmpty();
+        assertThrows(VeiculoNaoEncontradoException.class, () -> service.findById(VEICULO_ID));
 
         verify(repository, times(1)).findById(VEICULO_ID);
     }
 
     @Test
-    public void foundById() {
+    public void foundById() throws VeiculoNaoEncontradoException {
         doReturn(Optional.of(VEICULO)).when(repository).findById(VEICULO_ID);
 
-        assertThat(service.findById(VEICULO_ID)).containsSame(VEICULO);
+        assertThat(service.findById(VEICULO_ID)).isSameAs(VEICULO);
 
         verify(repository, times(1)).findById(VEICULO_ID);
     }
@@ -82,19 +83,19 @@ public class VeiculoServiceTest {
     public void updateNotFound() {
         doReturn(Optional.empty()).when(repository).findById(VEICULO_ID);
 
-        assertThat(service.update(savedVeiculo())).isFalse();
+        assertThrows(VeiculoNaoEncontradoException.class, () -> service.update(savedVeiculo()));
 
         verify(repository, times(1)).findById(VEICULO_ID);
     }
 
     @Test
-    public void update() {
+    public void update() throws VeiculoNaoEncontradoException {
         Veiculo veiculo = savedVeiculo();
 
         doReturn(Optional.of(veiculo)).when(repository).findById(VEICULO_ID);
         doReturn(veiculo).when(repository).save(veiculo);
 
-        assertThat(service.update(veiculo)).isTrue();
+        service.update(veiculo);
 
         verify(repository, times(1)).findById(VEICULO_ID);
         verify(repository, times(1)).save(veiculo);
@@ -106,20 +107,20 @@ public class VeiculoServiceTest {
     public void deleteNotFound() {
         doReturn(Optional.empty()).when(repository).findById(VEICULO_ID);
 
-        assertThat(service.delete(VEICULO_ID)).isFalse();
+        assertThrows(VeiculoNaoEncontradoException.class, () -> service.delete(VEICULO_ID));
 
         verify(repository, times(1)).findById(VEICULO_ID);
     }
 
     @Test
-    public void delete() {
+    public void delete() throws VeiculoNaoEncontradoException {
         doReturn(Optional.of(VEICULO)).when(repository).findById(VEICULO_ID);
-        doNothing().when(repository).delete(VEICULO);
+        doNothing().when(repository).deleteById(VEICULO_ID);
 
-        assertThat(service.delete(VEICULO_ID)).isTrue();
+        service.delete(VEICULO_ID);
 
         verify(repository, times(1)).findById(VEICULO_ID);
-        verify(repository, times(1)).delete(VEICULO);
+        verify(repository, times(1)).deleteById(VEICULO_ID);
     }
 
     private Carro savedVeiculo() {

@@ -5,6 +5,7 @@ import com.matera.wcc.projeto.config.ErrorHandlingConfiguration;
 import com.matera.wcc.projeto.config.ModelMapperConfiguration;
 import com.matera.wcc.projeto.domain.*;
 import com.matera.wcc.projeto.rest.dto.*;
+import com.matera.wcc.projeto.service.VeiculoNaoEncontradoException;
 import com.matera.wcc.projeto.service.VeiculoService;
 import org.hamcrest.collection.IsEmptyCollection;
 import org.jetbrains.annotations.NotNull;
@@ -190,16 +191,16 @@ public class VeiculosApiDelegateTest {
 
     @Test
     public void findNotFound() throws Exception {
-        doReturn(Optional.empty()).when(service).findById(VEICULO_ID);
-        mockMvc.perform(findOneRequest())
-                .andExpect(status().isNotFound());
+        doThrow(veiculoNaoEncontradoException()).when(service).findById(VEICULO_ID);
+
+        mockMvc.perform(findOneRequest()).andExpect(status().isNotFound());
 
         verify(service, times(1)).findById(VEICULO_ID);
     }
 
     @Test
     public void findMoto() throws Exception {
-        doReturn(Optional.of(moto())).when(service).findById(VEICULO_ID);
+        doReturn(moto()).when(service).findById(VEICULO_ID);
         mockMvc.perform(findOneRequest())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.tipo").value("moto"))
@@ -215,7 +216,7 @@ public class VeiculosApiDelegateTest {
 
     @Test
     public void findCarro() throws Exception {
-        doReturn(Optional.of(carro())).when(service).findById(VEICULO_ID);
+        doReturn(carro()).when(service).findById(VEICULO_ID);
         mockMvc.perform(findOneRequest())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.tipo").value("carro"))
@@ -232,7 +233,7 @@ public class VeiculosApiDelegateTest {
 
     @Test
     public void findCaminhao() throws Exception {
-        doReturn(Optional.of(caminhao())).when(service).findById(VEICULO_ID);
+        doReturn(caminhao()).when(service).findById(VEICULO_ID);
         mockMvc.perform(findOneRequest())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.tipo").value("caminhao"))
@@ -255,7 +256,7 @@ public class VeiculosApiDelegateTest {
 
     @Test
     public void updateCarro() throws Exception {
-        doReturn(true).when(service).update(isA(Carro.class));
+        doNothing().when(service).update(isA(Carro.class));
 
         mockMvc.perform(updateRequest(carroDTO()))
                 .andExpect(status().isOk())
@@ -282,7 +283,7 @@ public class VeiculosApiDelegateTest {
 
     @Test
     public void updateMoto() throws Exception {
-        doReturn(true).when(service).update(isA(Moto.class));
+        doNothing().when(service).update(isA(Moto.class));
 
         mockMvc.perform(updateRequest(motoDTO()))
                 .andExpect(status().isOk())
@@ -307,7 +308,7 @@ public class VeiculosApiDelegateTest {
 
     @Test
     public void updateCaminhao() throws Exception {
-        doReturn(true).when(service).update(isA(Caminhao.class));
+        doNothing().when(service).update(isA(Caminhao.class));
 
         mockMvc.perform(updateRequest(caminhaoDTO()))
                 .andExpect(status().isOk())
@@ -332,7 +333,7 @@ public class VeiculosApiDelegateTest {
 
     @Test
     public void updateVehicleNotFound() throws Exception {
-        doReturn(false).when(service).update(isA(Carro.class));
+        doThrow(veiculoNaoEncontradoException()).when(service).update(isA(Carro.class));
 
         mockMvc.perform(updateRequest(carroDTO()))
                 .andExpect(status().isNotFound());
@@ -342,7 +343,7 @@ public class VeiculosApiDelegateTest {
 
     @Test
     public void deleteVehicle() throws Exception {
-        doReturn(true).when(service).delete(VEICULO_ID);
+        doNothing().when(service).delete(VEICULO_ID);
 
         mockMvc.perform(deleteRequest())
                 .andExpect(status().isNoContent());
@@ -353,7 +354,7 @@ public class VeiculosApiDelegateTest {
 
     @Test
     public void deleteVehicleNotFound() throws Exception {
-        doReturn(false).when(service).delete(VEICULO_ID);
+        doThrow(veiculoNaoEncontradoException()).when(service).delete(VEICULO_ID);
 
         mockMvc.perform(deleteRequest())
                 .andExpect(status().isNotFound());
@@ -490,4 +491,7 @@ public class VeiculosApiDelegateTest {
         );
     }
 
+    private VeiculoNaoEncontradoException veiculoNaoEncontradoException() {
+        return new VeiculoNaoEncontradoException(VEICULO_ID);
+    }
 }
