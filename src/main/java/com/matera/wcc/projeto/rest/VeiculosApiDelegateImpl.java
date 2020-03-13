@@ -48,11 +48,7 @@ public class VeiculosApiDelegateImpl implements VeiculosApiDelegate {
 
     @Override
     public ResponseEntity<VeiculoDTO> getVeiculo(UUID veiculoId) throws Exception {
-        try {
-            return ResponseEntity.ok(convert(this.veiculoService.findById(veiculoId)));
-        } catch (VeiculoNaoEncontradoException ex) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(convert(this.veiculoService.findById(veiculoId)));
     }
 
     @Override
@@ -63,23 +59,15 @@ public class VeiculosApiDelegateImpl implements VeiculosApiDelegate {
 
     @Override
     public ResponseEntity<VeiculoDTO> updateVeiculo(UUID veiculoId, VeiculoDTO veiculoDTO) throws Exception {
-        try {
-            VeiculoDTO veiculoDTOWithId = veiculoDTO.id(veiculoId);
-            this.veiculoService.update(convert(veiculoDTOWithId));
-            return ResponseEntity.ok(veiculoDTOWithId);
-        } catch (VeiculoNaoEncontradoException ex) {
-            return ResponseEntity.notFound().build();
-        }
+        VeiculoDTO veiculoDTOWithId = veiculoDTO.id(veiculoId);
+        this.veiculoService.update(convert(veiculoDTOWithId));
+        return ResponseEntity.ok(veiculoDTOWithId);
     }
 
     @Override
     public ResponseEntity<Void> deleteVeiculo(UUID veiculoId) throws Exception {
-        try {
-            this.veiculoService.delete(veiculoId);
-            return ResponseEntity.noContent().build();
-        } catch (VeiculoNaoEncontradoException ex) {
-            return ResponseEntity.notFound().build();
-        }
+        this.veiculoService.delete(veiculoId);
+        return ResponseEntity.noContent().build();
     }
 
     @PostConstruct
