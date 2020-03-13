@@ -11,6 +11,8 @@ import com.matera.wcc.projeto.rest.dto.VeiculoDTO;
 import com.matera.wcc.projeto.service.VeiculoNaoEncontradoException;
 import com.matera.wcc.projeto.service.VeiculoService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +30,8 @@ import java.util.UUID;
 
 @Component
 public class VeiculosApiDelegateImpl implements VeiculosApiDelegate {
+    private static final Logger LOGGER = LoggerFactory.getLogger(VeiculosApiDelegateImpl.class);
+
     private final VeiculoService veiculoService;
     private final ModelMapper modelMapper;
 
@@ -39,8 +43,10 @@ public class VeiculosApiDelegateImpl implements VeiculosApiDelegate {
 
     @Override
     public ResponseEntity<List<VeiculoDTO>> getVeiculos(Integer page, Integer size) throws Exception {
+        LOGGER.debug("Preparando busca de veiculos [page: {}, size: {1}]");
         Pageable pageable = PageRequest.of(page, size);
         Page<VeiculoDTO> veiculos = this.veiculoService.findAll(pageable).map(this::convert);
+        LOGGER.info("Busca de veiculos realizada com sucesso [{} de {} veiculos retornados]", veiculos.getContent().size(), veiculos.getTotalElements());
         return ResponseEntity.ok()
                              .header("X-Total-Count", String.valueOf(veiculos.getTotalElements()))
                              .body(veiculos.getContent());

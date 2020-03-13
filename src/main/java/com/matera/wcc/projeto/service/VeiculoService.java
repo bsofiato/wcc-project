@@ -2,6 +2,8 @@ package com.matera.wcc.projeto.service;
 
 import com.matera.wcc.projeto.domain.Veiculo;
 import com.matera.wcc.projeto.repository.VeiculoRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,8 @@ import java.util.UUID;
 
 @Service
 public class VeiculoService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(VeiculoService.class);
+
     private final VeiculoRepository veiculoRepository;
 
     public VeiculoService(VeiculoRepository veiculoRepository) {
@@ -30,7 +34,10 @@ public class VeiculoService {
 
     @Transactional
     public UUID insert(Veiculo veiculo) {
-        return this.veiculoRepository.save(veiculo).getId();
+        LOGGER.debug("Preparando para salvar veiculo {}", veiculo);
+        UUID id = this.veiculoRepository.save(veiculo).getId();
+        LOGGER.info("Veiculo {} salvo com sucesso [id: {}]", veiculo, id);
+        return id;
     }
 
     @Transactional
