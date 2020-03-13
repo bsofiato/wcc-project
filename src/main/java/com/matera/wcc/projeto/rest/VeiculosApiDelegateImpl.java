@@ -54,25 +54,34 @@ public class VeiculosApiDelegateImpl implements VeiculosApiDelegate {
 
     @Override
     public ResponseEntity<VeiculoDTO> getVeiculo(UUID veiculoId) throws Exception {
-        return ResponseEntity.ok(convert(this.veiculoService.findById(veiculoId)));
+        LOGGER.debug("Preparando busca por veiculo de id {}", veiculoId);
+        VeiculoDTO veiculoDTO = convert(this.veiculoService.findById(veiculoId));
+        LOGGER.info("Busca de veiculo de id {} retornou {}", veiculoId, veiculoDTO);
+        return ResponseEntity.ok(veiculoDTO);
     }
 
     @Override
     public ResponseEntity<Void> createVeiculo(VeiculoDTO veiculoDTO) throws Exception {
+        LOGGER.debug("Inserindo novo veiculo [dados: {}]", veiculoDTO);
         UUID id = this.veiculoService.insert(convert(veiculoDTO));
+        LOGGER.info("Novo veiculo inserido com sucesso [id: {}]", id);
         return ResponseEntity.created(location(id)).build();
     }
 
     @Override
     public ResponseEntity<VeiculoDTO> updateVeiculo(UUID veiculoId, VeiculoDTO veiculoDTO) throws Exception {
+        LOGGER.debug("Atualizando veiculo de id {} [dados: {}]", veiculoId, veiculoDTO);
         VeiculoDTO veiculoDTOWithId = veiculoDTO.id(veiculoId);
         this.veiculoService.update(convert(veiculoDTOWithId));
+        LOGGER.info("Veiculo de id {} atualizado com sucesso [dados: {}]", veiculoId, veiculoDTO);
         return ResponseEntity.ok(veiculoDTOWithId);
     }
 
     @Override
     public ResponseEntity<Void> deleteVeiculo(UUID veiculoId) throws Exception {
+        LOGGER.debug("Deletando veiculo de id {}", veiculoId);
         this.veiculoService.delete(veiculoId);
+        LOGGER.info("Veiculo de id {} deletado com sucesso", veiculoId);
         return ResponseEntity.noContent().build();
     }
 
@@ -88,7 +97,9 @@ public class VeiculosApiDelegateImpl implements VeiculosApiDelegate {
     }
 
     private URI location(UUID id) {
-        return UriComponentsBuilder.fromPath("/v1/veiculos/{id}").build(id.toString());
+        URI location = UriComponentsBuilder.fromPath("/v1/veiculos/{id}").build(id.toString());
+        LOGGER.trace("Criando header de localizacao de novo veiculo [Location: {}]", location.toString());
+        return location;
     }
 
     private VeiculoDTO convert(Veiculo veiculo) {

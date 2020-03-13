@@ -24,37 +24,56 @@ public class VeiculoService {
 
     @Transactional(readOnly = true)
     public Veiculo findById(UUID id) throws VeiculoNaoEncontradoException {
-        return this.veiculoRepository.findById(id).orElseThrow(() -> new VeiculoNaoEncontradoException(id));
+        LOGGER.debug("Obtendo veiculo de id {}", id);
+        Veiculo veiculo = this.veiculoRepository.findById(id).orElseThrow(() -> {
+            LOGGER.warn("Veiculo de id {} nao encontrado", id);
+            return new VeiculoNaoEncontradoException(id);
+        });
+        LOGGER.info("Veiculo de id {} obtido com sucesso [veiculo: {}]", id, veiculo);
+        return veiculo;
     }
 
     @Transactional(readOnly = true)
     public Page<Veiculo> findAll(Pageable page) {
-        return this.veiculoRepository.findAll(page);
+        LOGGER.debug("Obtendo veiculos [page: {}]", page);
+        Page<Veiculo> result = this.veiculoRepository.findAll(page);
+        LOGGER.info("Obtido {} veiculos (de {}) [page: {}]", result.getContent().size(), result.getTotalElements(), page);
+        return result;
     }
 
     @Transactional
     public UUID insert(Veiculo veiculo) {
         LOGGER.debug("Preparando para salvar veiculo {}", veiculo);
         UUID id = this.veiculoRepository.save(veiculo).getId();
-        LOGGER.info("Veiculo {} salvo com sucesso [id: {}]", veiculo, id);
+        LOGGER.info("Veiculo de id {} salvo com sucesso [dados: {}]", id, veiculo);
         return id;
     }
 
     @Transactional
     public void delete(UUID uuid) throws VeiculoNaoEncontradoException {
-        ifExists(uuid, () -> this.veiculoRepository.deleteById(uuid));
+        LOGGER.debug("Deletando veiculo de id {}", uuid);
+        ifExists(uuid, () -> {
+            this.veiculoRepository.deleteById(uuid);
+            LOGGER.info("Veiculo de id {} deletado com sucesso");
+        });
     }
 
     @Transactional
     public void update(Veiculo veiculo) throws VeiculoNaoEncontradoException {
+        LOGGER.debug("Atualizando veiculo de id {} [dados: {}]", veiculo.getId(), veiculo);
         ifExists(veiculo.getId(), () -> {
             this.veiculoRepository.save(veiculo);
+            LOGGER.info("Veiculo de id {} atualizado com sucesso [dados: {}]", veiculo.getId(), veiculo);
         });
     }
 
     private void ifExists(UUID uuid, Runnable exec) throws VeiculoNaoEncontradoException {
-        if (this.findById(uuid) != null) {
+        LOGGER.trace("Verificando se o veiculo de id {} existe");
+        if (this.veiculoRepository.findById(uuid).isPresent()) {
             exec.run();
+        } else {
+            LOGGER.warn("Veiculo de id {} nao encontrado", uuid);
+            throw new VeiculoNaoEncontradoException(uuid);
         }
     }
 }
