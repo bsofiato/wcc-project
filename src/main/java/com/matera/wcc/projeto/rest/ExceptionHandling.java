@@ -10,9 +10,10 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 import org.zalando.problem.spring.web.advice.ProblemHandling;
+import org.zalando.problem.spring.web.advice.security.SecurityAdviceTrait;
 
 @ControllerAdvice
-public class ExceptionHandling implements ProblemHandling {
+public class ExceptionHandling implements ProblemHandling, SecurityAdviceTrait {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandler.class);
 
     @ExceptionHandler

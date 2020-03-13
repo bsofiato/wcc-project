@@ -116,7 +116,6 @@
 						"{{server}}"
 					],
 					"path": [
-						"",
 						"v1",
 						"veiculos"
 					]
@@ -161,7 +160,6 @@
 						"{{server}}"
 					],
 					"path": [
-						"",
 						"v1",
 						"veiculos"
 					]
@@ -246,7 +244,6 @@
 						"{{server}}"
 					],
 					"path": [
-						"",
 						"v1",
 						"veiculos",
 						"{{veiculoId}}"
@@ -292,7 +289,6 @@
 						"{{server}}"
 					],
 					"path": [
-						"",
 						"v1",
 						"veiculos",
 						"{{veiculoId}}"
@@ -338,7 +334,6 @@
 						"{{server}}"
 					],
 					"path": [
-						"",
 						"v1",
 						"veiculos",
 						"{{veiculoId}}"
@@ -347,6 +342,48 @@
 				"description": "Atualiza um caminhão na base de dados. \n\n\nO id do caminhão atualizado e fornecido pela variavel _veiculoId_ do ambiente do postman."
 			},
 			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "accessToken",
+				"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJKOVk0al9SSnRsWGhGVG5nQkxXTEg2dU9EWUVpaXliVGx3WkllcExaZFBJIn0.eyJqdGkiOiJlYjJhZjcxZC02YjQwLTQzZWEtYjJlMy05ZDYzYTNlMTlmZjciLCJleHAiOjE1ODQxMTE1NTgsIm5iZiI6MCwiaWF0IjoxNTg0MTExMjU4LCJpc3MiOiJodHRwOi8va2V5Y2xvYWs6OTA5MC9hdXRoL3JlYWxtcy9lc3RhY2lvbmFtZW50byIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI5OTc1NDk5NS01ZmVhLTQwNWUtODgzMC1jNTZhODVjNTFkYTMiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJlc3RhY2lvbmFtZW50byIsImF1dGhfdGltZSI6MCwic2Vzc2lvbl9zdGF0ZSI6IjFiMDAyZDFkLWJhM2YtNDI3My04ODE5LWI3MTEzMDk4YjA1ZSIsImFjciI6IjEiLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVsZXRlX3ZlaWN1bG9zIiwiY3JlYXRlX3ZlaWN1bG9zIiwidmlld192ZWljdWxvcyIsIm9mZmxpbmVfYWNjZXNzIiwibW9kaWZ5X3ZlaWN1bG9zIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6IkNhbGViZSBNb3VyYSIsInByZWZlcnJlZF91c2VybmFtZSI6ImNhbGViZSIsImdpdmVuX25hbWUiOiJDYWxlYmUiLCJmYW1pbHlfbmFtZSI6Ik1vdXJhIiwiZW1haWwiOiJjYWxlYmVAbG9jYWxob3N0IiwiYXV0aG9yaXRpZXMiOlsiZGVsZXRlX3ZlaWN1bG9zIiwiY3JlYXRlX3ZlaWN1bG9zIiwidmlld192ZWljdWxvcyIsIm9mZmxpbmVfYWNjZXNzIiwibW9kaWZ5X3ZlaWN1bG9zIiwidW1hX2F1dGhvcml6YXRpb24iXX0.FXgNFk7PbcEWJ2xHK1V8bnnlnP6n7zstjX4Zjlu0FOZ4DfRY-e7BdSBGY7tyy9hZSbBeMUMyoRwEYvNIiUeF7VMZX1KrH0KLacGTFX5ueeMX-7aCO_HsAPrgqKJl1R47sJOZU0QbdFt7ZMplU2CXBgduzaKlhI7O-XPPLQAbwnyv4xWiTtB3gFnaDqvgovk-9zK0MV64mGkw2FWK78EnWvLIrzNjt3_fVeGMs8jshEPf6d7yivPeAvGH-Rqe1pBNuWClfZPMG2dKeHBASOn1S9jT6q_jFRKkmPTTu3x35SYCacSqZgrHner1moBeG7-nEi2Qr__xeEd9ZLDiiSLsTw",
+				"type": "string"
+			},
+			{
+				"key": "tokenType",
+				"value": "bearer",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "6ab1e889-02ad-40e6-b64f-2f356fa02d6e",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "555cf587-ab7e-45c5-919e-3d0515b6c4c6",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	],
 	"protocolProfileBehavior": {}

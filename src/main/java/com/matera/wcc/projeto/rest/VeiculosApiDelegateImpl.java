@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -42,6 +43,7 @@ public class VeiculosApiDelegateImpl implements VeiculosApiDelegate {
 
 
     @Override
+    @PreAuthorize("hasAuthority('view_veiculos')")
     public ResponseEntity<List<VeiculoDTO>> getVeiculos(Integer page, Integer size) throws Exception {
         LOGGER.debug("Preparando busca de veiculos [page: {}, size: {1}]");
         Pageable pageable = PageRequest.of(page, size);
@@ -53,6 +55,7 @@ public class VeiculosApiDelegateImpl implements VeiculosApiDelegate {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('view_veiculos')")
     public ResponseEntity<VeiculoDTO> getVeiculo(UUID veiculoId) throws Exception {
         LOGGER.debug("Preparando busca por veiculo de id {}", veiculoId);
         VeiculoDTO veiculoDTO = convert(this.veiculoService.findById(veiculoId));

@@ -1,0 +1,7 @@
+  security:
+    oauth2:
+      clientId: ${CLIENT_ID:estacionamento}
+      clientSecret: ${CLIENT_SECRET:d3518478-d2e9-48bb-b3ed-ff90de943fc9}
+      resource:
+        jwk:
+          key-set-uri: http://${KEYCLOAK_HOST:keycloak:9090}/auth/realms/estacionamento/protocol/openid-connect/certs

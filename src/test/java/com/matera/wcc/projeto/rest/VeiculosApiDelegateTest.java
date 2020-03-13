@@ -3,12 +3,13 @@ package com.matera.wcc.projeto.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matera.wcc.projeto.config.ErrorHandlingConfiguration;
 import com.matera.wcc.projeto.config.ModelMapperConfiguration;
+import com.matera.wcc.projeto.config.ResourceServerConfiguration;
 import com.matera.wcc.projeto.domain.*;
+import com.matera.wcc.projeto.persona.LoggedAsCalebe;
+import com.matera.wcc.projeto.persona.LoggedAsJessica;
 import com.matera.wcc.projeto.rest.dto.*;
 import com.matera.wcc.projeto.service.VeiculoNaoEncontradoException;
 import com.matera.wcc.projeto.service.VeiculoService;
-import org.hamcrest.collection.IsEmptyCollection;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -24,16 +25,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.zalando.problem.spring.web.autoconfigure.security.SecurityConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,8 +49,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import({
     ErrorHandlingConfiguration.class,
     ModelMapperConfiguration.class,
-    VeiculosApiDelegateImpl.class
+    ResourceServerConfiguration.class,
+    VeiculosApiDelegateImpl.class,
+    org.zalando.problem.spring.web.autoconfigure.security.SecurityConfiguration.class,
+    com.matera.wcc.projeto.config.SecurityConfiguration.class
 })
+@LoggedAsJessica
 public class VeiculosApiDelegateTest {
 
     private static final UUID VEICULO_ID = UUID.fromString("fe5c20ff-c863-407a-891d-e9fef61d3114");
@@ -76,6 +82,7 @@ public class VeiculosApiDelegateTest {
 
     @Test
     public void createCarro() throws Exception {
+
         doReturn(VEICULO_ID).when(service).insert(isA(Carro.class));
 
         mockMvc.perform(createRequest(carroDTO()))

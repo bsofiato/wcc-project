@@ -1,5 +1,17 @@
 version: '3'
 services:
+  keycloak:
+    image: jboss/keycloak:9.0.0
+    volumes:
+      - ../keycloak:/var/keycloak/provisioning
+    environment:
+      DB_VENDOR: H2
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_IMPORT: /var/keycloak/provisioning/estacionamento-realm.json
+    command: ["-b", "0.0.0.0", "-Djboss.http.port=9090"]
+    ports:
+      - 9090:9090
   maria-db:
     image: mariadb:10.3.6
     environment:
@@ -19,4 +31,5 @@ services:
       - SPRING_PROFILES_ACTIVE
     depends_on:
       - maria-db
+      - keycloak
     restart: on-failure
