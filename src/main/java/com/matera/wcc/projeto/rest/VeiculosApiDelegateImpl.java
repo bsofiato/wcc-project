@@ -64,6 +64,7 @@ public class VeiculosApiDelegateImpl implements VeiculosApiDelegate {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('create_veiculos')")
     public ResponseEntity<Void> createVeiculo(VeiculoDTO veiculoDTO) throws Exception {
         LOGGER.debug("Inserindo novo veiculo [dados: {}]", veiculoDTO);
         UUID id = this.veiculoService.insert(convert(veiculoDTO));
@@ -72,6 +73,7 @@ public class VeiculosApiDelegateImpl implements VeiculosApiDelegate {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('modify_veiculos')")
     public ResponseEntity<VeiculoDTO> updateVeiculo(UUID veiculoId, VeiculoDTO veiculoDTO) throws Exception {
         LOGGER.debug("Atualizando veiculo de id {} [dados: {}]", veiculoId, veiculoDTO);
         VeiculoDTO veiculoDTOWithId = veiculoDTO.id(veiculoId);
@@ -81,6 +83,7 @@ public class VeiculosApiDelegateImpl implements VeiculosApiDelegate {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('delete_veiculos')")
     public ResponseEntity<Void> deleteVeiculo(UUID veiculoId) throws Exception {
         LOGGER.debug("Deletando veiculo de id {}", veiculoId);
         this.veiculoService.delete(veiculoId);
