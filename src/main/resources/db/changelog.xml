@@ -36,4 +36,13 @@
             <column name="TIPO"></column>
         </createIndex>
     </changeSet>
+
+    <changeSet id="1585079740" author="bs">
+        <comment>Inclusão de coluna importado</comment>
+        <addColumn tableName="VEICULO">
+            <column name="IMPORTADO" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

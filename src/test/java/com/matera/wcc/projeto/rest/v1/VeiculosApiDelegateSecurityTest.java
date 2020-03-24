@@ -1,55 +1,39 @@
-package com.matera.wcc.projeto.rest;
+package com.matera.wcc.projeto.rest.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matera.wcc.projeto.config.ErrorHandlingConfiguration;
 import com.matera.wcc.projeto.config.ModelMapperConfiguration;
 import com.matera.wcc.projeto.config.ResourceServerConfiguration;
-import com.matera.wcc.projeto.domain.*;
+import com.matera.wcc.projeto.domain.Carro;
 import com.matera.wcc.projeto.persona.LoggedAsDavi;
-import com.matera.wcc.projeto.persona.LoggedAsJessica;
-import com.matera.wcc.projeto.rest.dto.*;
-import com.matera.wcc.projeto.service.VeiculoNaoEncontradoException;
+import com.matera.wcc.projeto.rest.v1.dto.CarroDTO;
+import com.matera.wcc.projeto.rest.v1.dto.CombustivelDTO;
+import com.matera.wcc.projeto.rest.v1.dto.VeiculoDTO;
 import com.matera.wcc.projeto.service.VeiculoService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.zalando.problem.spring.web.autoconfigure.security.SecurityConfiguration;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest()
 @Import({
     ErrorHandlingConfiguration.class,
     ModelMapperConfiguration.class,
     ResourceServerConfiguration.class,
-    VeiculosApiDelegateImpl.class,
+    V1VeiculosApiDelegateImpl.class,
     SecurityConfiguration.class,
     com.matera.wcc.projeto.config.SecurityConfiguration.class
 })

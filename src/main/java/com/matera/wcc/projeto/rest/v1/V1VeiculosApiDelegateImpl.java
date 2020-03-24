@@ -1,14 +1,13 @@
-package com.matera.wcc.projeto.rest;
+package com.matera.wcc.projeto.rest.v1;
 
 import com.matera.wcc.projeto.domain.Caminhao;
 import com.matera.wcc.projeto.domain.Carro;
 import com.matera.wcc.projeto.domain.Moto;
 import com.matera.wcc.projeto.domain.Veiculo;
-import com.matera.wcc.projeto.rest.dto.CaminhaoDTO;
-import com.matera.wcc.projeto.rest.dto.CarroDTO;
-import com.matera.wcc.projeto.rest.dto.MotoDTO;
-import com.matera.wcc.projeto.rest.dto.VeiculoDTO;
-import com.matera.wcc.projeto.service.VeiculoNaoEncontradoException;
+import com.matera.wcc.projeto.rest.v1.dto.CaminhaoDTO;
+import com.matera.wcc.projeto.rest.v1.dto.CarroDTO;
+import com.matera.wcc.projeto.rest.v1.dto.MotoDTO;
+import com.matera.wcc.projeto.rest.v1.dto.VeiculoDTO;
 import com.matera.wcc.projeto.service.VeiculoService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -16,27 +15,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Component
-public class VeiculosApiDelegateImpl implements VeiculosApiDelegate {
-    private static final Logger LOGGER = LoggerFactory.getLogger(VeiculosApiDelegateImpl.class);
+public class V1VeiculosApiDelegateImpl implements V1VeiculosApiDelegate {
+    private static final Logger LOGGER = LoggerFactory.getLogger(V1VeiculosApiDelegateImpl.class);
 
     private final VeiculoService veiculoService;
     private final ModelMapper modelMapper;
 
-    public VeiculosApiDelegateImpl(VeiculoService veiculoService, ModelMapper modelMapper) {
+    public V1VeiculosApiDelegateImpl(VeiculoService veiculoService, ModelMapper modelMapper) {
         this.veiculoService = veiculoService;
         this.modelMapper = modelMapper;
     }
@@ -111,7 +107,9 @@ public class VeiculosApiDelegateImpl implements VeiculosApiDelegate {
     private VeiculoDTO convert(Veiculo veiculo) {
         return this.modelMapper.map(veiculo, VeiculoDTO.class);
     }
-    private Veiculo convert(VeiculoDTO veiculo) {
-        return this.modelMapper.map(veiculo, Veiculo.class);
-    }
+    private Veiculo convert(VeiculoDTO veiculoDTO) {
+        Veiculo veiculo = this.modelMapper.map(veiculoDTO, Veiculo.class);
+        veiculo.setImportado(false); // Valor default de importado na V1
+        return veiculo;
+     }
 }

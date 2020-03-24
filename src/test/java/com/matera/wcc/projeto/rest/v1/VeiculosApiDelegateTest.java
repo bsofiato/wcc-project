@@ -1,13 +1,12 @@
-package com.matera.wcc.projeto.rest;
+package com.matera.wcc.projeto.rest.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matera.wcc.projeto.config.ErrorHandlingConfiguration;
 import com.matera.wcc.projeto.config.ModelMapperConfiguration;
 import com.matera.wcc.projeto.config.ResourceServerConfiguration;
 import com.matera.wcc.projeto.domain.*;
-import com.matera.wcc.projeto.persona.LoggedAsCalebe;
 import com.matera.wcc.projeto.persona.LoggedAsJessica;
-import com.matera.wcc.projeto.rest.dto.*;
+import com.matera.wcc.projeto.rest.v1.dto.*;
 import com.matera.wcc.projeto.service.VeiculoNaoEncontradoException;
 import com.matera.wcc.projeto.service.VeiculoService;
 import org.junit.jupiter.api.Test;
@@ -25,13 +24,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.zalando.problem.spring.web.autoconfigure.security.SecurityConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     ErrorHandlingConfiguration.class,
     ModelMapperConfiguration.class,
     ResourceServerConfiguration.class,
-    VeiculosApiDelegateImpl.class,
+    V1VeiculosApiDelegateImpl.class,
     org.zalando.problem.spring.web.autoconfigure.security.SecurityConfiguration.class,
     com.matera.wcc.projeto.config.SecurityConfiguration.class
 })

@@ -33,6 +33,9 @@ public abstract class Veiculo {
     @Enumerated(EnumType.STRING)
     private Combustivel combustivel;
 
+    @Column(name = "IMPORTADO")
+    private boolean importado;
+
     public UUID getId() {
         return id;
     }
@@ -76,4 +79,8 @@ public abstract class Veiculo {
     public void setCombustivel(Combustivel combustivel) {
         this.combustivel = combustivel;
     }
+
+    public boolean isImportado() { return importado; }
+
+    public void setImportado(boolean importado) { this.importado = importado; }
 }

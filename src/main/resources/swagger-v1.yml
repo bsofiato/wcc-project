@@ -1,0 +1,227 @@
+openapi: 3.0.0
+info:
+  title: APIs projeto Womem Can Code
+  description: >
+    Esse swagger representa as APIs do curso de desenvolvimento ministrado no [Women Can Code](http://conteudo.sharerh.com/womencancodebrasil)
+  version: 1.0.0
+
+servers:
+  - url: http://locahost:8080/v1
+
+tags:
+  - name: V1 Veiculos
+    description: Endpoints para manutenção de cadastro de veículos
+
+paths:
+  /veiculos:
+    post:
+      operationId: createVeiculo
+      tags: 
+        - V1 Veiculos
+      summary: Cria um novo veiculo
+      description:  Cria um novo veiculo
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/VeiculoDTO'
+      responses:
+        201:
+          description: Veículo cadastrado
+          headers:
+            Location:
+              $ref: '#/components/headers/Location'
+    get:
+      operationId: getVeiculos
+      tags: 
+        - V1 Veiculos
+      summary: Obtém os veículos cadastrados
+      description: > 
+        Obtém os veículos cadastrados.
+        
+        Esse endpoint suporta paginação.
+      parameters: 
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+      responses:
+        200:
+          description: Veículos cadastrados
+          headers:
+            X-Total-Count:
+              $ref: '#/components/headers/X-Total-Count'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VeiculosDTO'
+        default:
+          description: Erro desconhecido
+          
+  /veiculos/{veiculoId}:
+    parameters: 
+      - $ref: '#/components/parameters/veiculoId'
+    put:
+      operationId: updateVeiculo
+      tags:
+        - V1 Veiculos
+      summary: Atualiza o veiculo associado ao id fornecido
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/VeiculoDTO'
+      responses:
+        200:
+          description: Veiculo atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VeiculoDTO'
+        404:
+          description: Não existe veículo com o id fornecido
+        default:
+          description: Erro desconhecido
+                
+    delete:
+      operationId: deleteVeiculo
+      tags:
+        - V1 Veiculos
+      summary: Dado um id, deleta o veículo correspondente
+      responses:
+        204:
+          description: Veículo deletado com sucesso
+        404:
+          description: Não existe veículo com o id fornecido
+        default:
+          description: Erro desconhecido
+    get:
+      operationId: getVeiculo
+      tags:
+        - V1 Veiculos
+      summary: Dado um id, obtém o veículo correspondente
+      responses:
+        200:
+          description: Veículo associado ao ID fornecido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VeiculoDTO'
+        404:
+          description: Não existe veículo com o id fornecido
+        default:
+          description: Erro desconhecido
+
+components:
+  schemas:
+    CombustivelDTO:
+      description: Combustivel de um veiculo
+      type: string
+      enum: 
+        - ALCOOL
+        - GASOLINA
+        - FLEX
+        - DIESEL
+    VeiculoDTO:
+      type: object
+      description: Veiculo
+      discriminator:
+        propertyName: tipo
+        mapping:
+          carro: CarroDTO
+          moto: MotoDTO
+          caminhao: CaminhaoDTO
+      properties:
+        id: 
+          description: O identificador do veículo
+          type: string
+          format: uuid
+        modelo:
+          description: O modelo do veículo
+          type: string
+          maxLength: 80
+        marca:
+          description: A marca do veículo
+          type: string
+          maxLength: 80
+        anoFabricacao:
+          description: O ano de fabricação do veículo
+          type: integer
+          format: int32
+          maximum: 9999
+          minimum: 1900
+        anoModelo:
+          description: O ano do modelo do veículo
+          type: integer
+          format: int32
+          maximum: 9999
+          minimum: 1900
+        combustivel:
+          $ref: '#/components/schemas/CombustivelDTO'
+      required: 
+        - modelo
+        - marca
+        - anoFabricacao
+        - anoModelo
+        - combustivel
+    CaminhaoDTO:
+      allOf:
+        - $ref: '#/components/schemas/VeiculoDTO'
+    MotoDTO:
+      allOf:
+        - $ref: '#/components/schemas/VeiculoDTO'
+    CarroDTO:
+      allOf:
+        - $ref: '#/components/schemas/VeiculoDTO'
+        - type: object
+          properties: 
+            numeroPortas:
+              description: Número de portas no carro
+              type: integer
+              format: int32
+              maximum: 9
+              minimum: 1
+          required:
+            - numeroPortas
+    
+    VeiculosDTO:
+      description: Conjunto de veículos
+      type: array
+      items: 
+        $ref: '#/components/schemas/VeiculoDTO'
+
+  headers:
+    X-Total-Count:
+      schema:
+        type: integer
+        format: int32
+      description: Número total de itens de uma consulta paginada.
+    Location:
+      schema:
+        type: string
+        format: uri
+      description: URI identificando o veículo recém cadrastado.
+  parameters:
+    veiculoId:
+      in: path
+      name: veiculoId
+      schema:
+        type: string
+        format: uuid
+      description: Identificador do veículo desejado
+      required: true
+    page:
+      in: query
+      name: page
+      schema:
+        type: integer
+        minimum: 0
+      description: Número da página a ser obtida
+      required: true
+    size:
+      in: query
+      name: size
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+      description: Número de items a ser incluído em cada página
+      required: true

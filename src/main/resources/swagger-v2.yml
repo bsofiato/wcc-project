@@ -6,18 +6,18 @@ info:
   version: 1.0.0
 
 servers:
-  - url: http://locahost:8080/v1
+  - url: http://locahost:8080/v2
 
 tags:
-  - name: Veiculos
-    description: Endpoints para manutenção de cadastro de veículos
+  - name: V2 Veiculos
+    description: Endpoints para manutenção de cadastro de veículos (v2)
 
 paths:
   /veiculos:
     post:
       operationId: createVeiculo
       tags: 
-        - Veiculos
+        - V2 Veiculos
       summary: Cria um novo veiculo
       description:  Cria um novo veiculo
       requestBody:
@@ -34,7 +34,7 @@ paths:
     get:
       operationId: getVeiculos
       tags: 
-        - Veiculos
+        - V2 Veiculos
       summary: Obtém os veículos cadastrados
       description: > 
         Obtém os veículos cadastrados.
@@ -62,7 +62,7 @@ paths:
     put:
       operationId: updateVeiculo
       tags:
-        - Veiculos
+        - V2 Veiculos
       summary: Atualiza o veiculo associado ao id fornecido
       requestBody:
         content:
@@ -84,7 +84,7 @@ paths:
     delete:
       operationId: deleteVeiculo
       tags:
-        - Veiculos
+        - V2 Veiculos
       summary: Dado um id, deleta o veículo correspondente
       responses:
         204:
@@ -96,7 +96,7 @@ paths:
     get:
       operationId: getVeiculo
       tags:
-        - Veiculos
+        - V2 Veiculos
       summary: Dado um id, obtém o veículo correspondente
       responses:
         200:
