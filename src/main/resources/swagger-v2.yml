@@ -158,12 +158,16 @@ components:
           minimum: 1900
         combustivel:
           $ref: '#/components/schemas/CombustivelDTO'
+        importado:
+          description: Flag indicando que se o veículo em questão é importado
+          type: boolean
       required: 
         - modelo
         - marca
         - anoFabricacao
         - anoModelo
         - combustivel
+        - importado
     CaminhaoDTO:
       allOf:
         - $ref: '#/components/schemas/VeiculoDTO'
