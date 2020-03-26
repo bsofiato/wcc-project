@@ -142,7 +142,7 @@ public class VeiculosApiDelegateSecurityTest {
         carro.setAnoModelo(2019);
         carro.setCombustivel(CombustivelDTO.ALCOOL);
         carro.setNumeroPortas(5);
-        //carro.setImportado(true); @todo descomentar
+        carro.setImportado(true);
         return carro;
     }
 }

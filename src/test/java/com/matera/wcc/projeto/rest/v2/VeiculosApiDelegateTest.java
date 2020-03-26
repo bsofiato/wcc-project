@@ -461,7 +461,7 @@ public class VeiculosApiDelegateTest {
         moto.setAnoFabricacao(2015);
         moto.setAnoModelo(2016);
         moto.setCombustivel(CombustivelDTO.GASOLINA);
-//        moto.setImportado(false); @todo descomentar
+        moto.setImportado(false);
 
         return moto;
     }
@@ -474,7 +474,7 @@ public class VeiculosApiDelegateTest {
         carro.setAnoModelo(2019);
         carro.setCombustivel(CombustivelDTO.ALCOOL);
         carro.setNumeroPortas(5);
-//        carro.setImportado(true); @todo descomentar
+        carro.setImportado(true);
         return carro;
     }
 
@@ -485,16 +485,16 @@ public class VeiculosApiDelegateTest {
         caminhao.setAnoFabricacao(2010);
         caminhao.setAnoModelo(2011);
         caminhao.setCombustivel(CombustivelDTO.DIESEL);
-//        caminhao.setImportado(true); @todo descomentar
+        caminhao.setImportado(true);
 
         return caminhao;
     }
 
     private static Stream<Arguments> invalidVehicles() {
         return Stream.of(
-//                Arguments.of(carroDTO().importado(null), "carro sem fornecer a flag de importado"),      @todo descomentar
-//                Arguments.of(motoDTO().importado(null), "moto sem fornecer a flag de importado"),        @todo descomentar
-//                Arguments.of(caminhaoDTO().importado(null), "caminhao sem fornecer a flag de importado") @todo descomentar
+            Arguments.of(carroDTO().importado(null), "carro sem fornecer a flag de importado"),
+            Arguments.of(motoDTO().importado(null), "moto sem fornecer a flag de importado"),
+            Arguments.of(caminhaoDTO().importado(null), "caminhao sem fornecer a flag de importado"),
             Arguments.of(carroDTO().modelo(INVALID_MODELO), "carro cujo modelo tem tamanho maior que 80"),
             Arguments.of(motoDTO().modelo(INVALID_MODELO), "moto cujo modelo tem tamanho maior que 80"),
             Arguments.of(caminhaoDTO().modelo(INVALID_MODELO), "caminhão cujo modelo tem tamanho maior que 80"),
