@@ -15,15 +15,16 @@ tags:
 paths:
   /veiculos:
     post:
+      deprecated: true
       operationId: createVeiculo
-      tags: 
+      tags:
         - V1 Veiculos
       summary: Cria um novo veiculo
       description:  Cria um novo veiculo
       requestBody:
         content:
           application/json:
-            schema: 
+            schema:
               $ref: '#/components/schemas/VeiculoDTO'
       responses:
         201:
@@ -32,15 +33,16 @@ paths:
             Location:
               $ref: '#/components/headers/Location'
     get:
+      deprecated: true
       operationId: getVeiculos
-      tags: 
+      tags:
         - V1 Veiculos
       summary: Obtém os veículos cadastrados
-      description: > 
+      description: >
         Obtém os veículos cadastrados.
-        
+
         Esse endpoint suporta paginação.
-      parameters: 
+      parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/size'
       responses:
@@ -55,19 +57,20 @@ paths:
                 $ref: '#/components/schemas/VeiculosDTO'
         default:
           description: Erro desconhecido
-          
+
   /veiculos/{veiculoId}:
-    parameters: 
+    parameters:
       - $ref: '#/components/parameters/veiculoId'
     put:
       operationId: updateVeiculo
+      deprecated: true
       tags:
         - V1 Veiculos
       summary: Atualiza o veiculo associado ao id fornecido
       requestBody:
         content:
           application/json:
-            schema: 
+            schema:
               $ref: '#/components/schemas/VeiculoDTO'
       responses:
         200:
@@ -80,9 +83,10 @@ paths:
           description: Não existe veículo com o id fornecido
         default:
           description: Erro desconhecido
-                
+
     delete:
       operationId: deleteVeiculo
+      deprecated: true
       tags:
         - V1 Veiculos
       summary: Dado um id, deleta o veículo correspondente
@@ -95,6 +99,7 @@ paths:
           description: Erro desconhecido
     get:
       operationId: getVeiculo
+      deprecated: true
       tags:
         - V1 Veiculos
       summary: Dado um id, obtém o veículo correspondente
@@ -115,7 +120,7 @@ components:
     CombustivelDTO:
       description: Combustivel de um veiculo
       type: string
-      enum: 
+      enum:
         - ALCOOL
         - GASOLINA
         - FLEX
@@ -130,7 +135,7 @@ components:
           moto: MotoDTO
           caminhao: CaminhaoDTO
       properties:
-        id: 
+        id:
           description: O identificador do veículo
           type: string
           format: uuid
@@ -156,7 +161,7 @@ components:
           minimum: 1900
         combustivel:
           $ref: '#/components/schemas/CombustivelDTO'
-      required: 
+      required:
         - modelo
         - marca
         - anoFabricacao
@@ -172,7 +177,7 @@ components:
       allOf:
         - $ref: '#/components/schemas/VeiculoDTO'
         - type: object
-          properties: 
+          properties:
             numeroPortas:
               description: Número de portas no carro
               type: integer
@@ -181,11 +186,11 @@ components:
               minimum: 1
           required:
             - numeroPortas
-    
+
     VeiculosDTO:
       description: Conjunto de veículos
       type: array
-      items: 
+      items:
         $ref: '#/components/schemas/VeiculoDTO'
 
   headers:
