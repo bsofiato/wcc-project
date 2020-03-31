@@ -19,6 +19,18 @@
             <column name="MODELO" type="VARCHAR(80)">
                 <constraints nullable="false"/>
             </column>
+            <column name="ANO_FABRICACAO" type="NUMBER(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ANO_MODELO" type="NUMBER(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COMBUSTIVEL" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NUMERO_PORTAS" type="NUMBER(1)">
+                <constraints nullable="true"/> <!-- Caminhoes e motos nao tem portas -->
+            </column>
         </createTable>
         <createIndex tableName="VEICULO" indexName="VEICULO_TIPO_IDX">
             <column name="TIPO"></column>
